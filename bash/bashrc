@@ -66,6 +66,7 @@ fi
 # Set ls alias conditionally for macOS and Linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias ls='ls -G'  # macOS uses -G for colors
+    alias aw='aerospace list-windows --workspace'
 else
     alias ls='ls --color=auto'  # Linux uses --color=auto
 fi
