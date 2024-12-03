@@ -80,7 +80,6 @@ fi
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias ls='ls -G'                                # macOS uses -G for colors
     alias aw='aerospace list-windows --workspace'   # aerospace list windows alias
-    alias bash='/opt/homebrew/bin/bash'             # use brew bash
 else
     alias ls='ls --color=auto'  # Linux uses --color=auto for colors
 fi
