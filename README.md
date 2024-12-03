@@ -66,5 +66,3 @@ tmux 3.5a
 Planned updates to configs: 
 
 - [ ] Add sketchybar for macos
-- [ ] Update bash on macos
-- [ ] Clean up tmux config
