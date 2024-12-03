@@ -19,7 +19,6 @@
   bD = branch -D
   co = checkout
   cob = checkout -b
-  dc = diff --cached
   ds = diff --staged
   lg = log --graph
   lo = log --oneline
