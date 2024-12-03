@@ -1,5 +1,7 @@
 # My Configs
 
+These configs are used across MacOS and Linux.
+
 - [Bash](#bash)
 - [MacOS](#macos)
   - [Aerospace](#aerospace)
@@ -49,3 +51,4 @@ Planned updates to configs:
 - [ ] Add sketchybar for macos
 - [ ] Update bash on macos
 - [ ] Clean up tmux config
+- [ ] Get tmux on mac to use brew installed bash
