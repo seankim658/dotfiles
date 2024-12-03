@@ -1,6 +1,25 @@
 [user]
-	email = 33474168+seankim658@users.noreply.github.com
-	name = Sean Kim
+  email = 33474168+seankim658@users.noreply.github.com
+  name = Sean Kim
+
+[init]
+  defaultBranch = main
 
 [core]
   editor = nvim
+
+[alias]
+  s = status
+  a = add
+  c = commit
+  cm = commit -m
+  d = diff
+  b = branch
+  bd = branch -d
+  bD = branch -D
+  co = checkout
+  cob = checkout -b
+  dc = diff --cached
+  ds = diff --staged
+  lg = log --graph
+  lo = log --oneline
