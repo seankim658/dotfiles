@@ -11,6 +11,14 @@
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml -> ~/projects/personal/dotfiles/mac/aerospace.toml
 
+PROJ_DIR=~/projects/
+PERSONAL_DIR="${PROJ_DIR}/personal/"
+MISC_DIR="${PROJ_DIR}/misc/"
+
+mkdir -p "$PERSONAL_DIR"
+mkdir -p "$MISC_DIR"
+
+
 DOTFILES_DIR=~/projects/personal/dotfiles/
 HOME_DIR=~
 BACKUP_DIR=~/.backup_dotfiles
@@ -50,6 +58,10 @@ create_symlink "$DOTFILES_DIR/scripts/" "$HOME_DIR/scripts"
 delim
 create_symlink "$DOTFILES_DIR/gitconfig" "$HOME_DIR/.gitconfig"
 delim
+if [ -d ~/projects/personal/codeprompts ]; then
+    create_symlink "$HOME_DIR/projects/personal/codeprompts/src/templates" "$HOME_DIR/cptemps"
+    delim
+fi
 
 # MacOS-specific symlinks
 if [[ "$OSTYPE" == "darwin"* ]]; then
