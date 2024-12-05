@@ -88,4 +88,4 @@ tmux 3.5a
 
 Planned updates to configs: 
 
-- [ ] Add sketchybar for macos
+- [ ] Add nvim config symlink to setup script
