@@ -69,6 +69,23 @@ return {
       },
     },
   },
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*",
+    lazy = true,
+    ft = "markdown",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "macos",
+          path = "~/Documents/macos_vault/",
+        },
+      },
+    },
+  },
   require "configs.cmp",
   require "configs.nvim-tree",
 }
