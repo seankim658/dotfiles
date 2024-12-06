@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## Sets up the symlinks and re-sources source files
 ##
 ## Symlinks (in home directory)
