@@ -5,15 +5,17 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 
--- map("n", ";", ":", { desc = "CMD enter command mode" }) -- `;` to enter command mode
 map("i", "jj", "<ESC>") -- `jj` to exit insert mode
+map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Float diagnostic"})
+map("n", "<CR>", 'm`o<Esc>``') -- Create newline below cursor without entering insert mode
+map("n", "<leader><CR>", 'm`O<Esc>``') -- Create newline above cursor without entering insert mode
 
 -- Window resizing.
-map("n", "<A-1>", "<C-w>+", { desc = "Increase window height" })
-map("n", "<A-2>", "<C-w>-", { desc = "Decrease window height" })
-map("n", "<A-3>", "<C-w><", { desc = "Decrease window width" })
-map("n", "<A-4>", "<C-w>>", { desc = "Increase window width" })
-map("n", "<A-5>", "<C-w>=", { desc = "Equal window dimensions" })
+-- map("n", "<A-1>", "<C-w>+", { desc = "Increase window height" })
+-- map("n", "<A-2>", "<C-w>-", { desc = "Decrease window height" })
+-- map("n", "<A-3>", "<C-w><", { desc = "Decrease window width" })
+-- map("n", "<A-4>", "<C-w>>", { desc = "Increase window width" })
+-- map("n", "<A-5>", "<C-w>=", { desc = "Equal window dimensions" })
 
 -- Delete/change without yanking.
 map("n", "d", "\"_d", { desc = "Delete without yanking" })
@@ -35,7 +37,3 @@ map("n", "s", "\"_s", { desc = "Substitute without yanking" })
 map("v", "s", "\"_s", { desc = "Substitute without yanking" })
 map("n", "S", "\"_S", { desc = "Substitute without yanking" })
 map("v", "S", "\"_s", { desc = "Substitute without yanking" })
-
-map("n", "<leader>ds", vim.diagnostic.open_float, { desc = "Float diagnostic"})
-
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
