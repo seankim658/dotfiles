@@ -5,6 +5,13 @@ return {
     local cmp = require "cmp"
     local conf = require "nvchad.configs.cmp"
 
+    conf.mapping["<CR>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.close()
+      end
+      fallback()
+    end, { "i", "s" })
+
     conf.mapping["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         local entry = cmp.get_selected_entry()
