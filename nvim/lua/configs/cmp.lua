@@ -5,6 +5,19 @@ return {
     local cmp = require "cmp"
     local conf = require "nvchad.configs.cmp"
 
+    conf.formatting = {
+      format = function(entry, vim_item)
+        vim_item.menu = ({
+          nvim_lsp = "[LSP]",
+          luasnip = "[Snippet]",
+          buffer = "[Buffer]",
+          nvim_lua = "[Lua]",
+          path = "[Path]",
+        })[entry.source.name]
+        return vim_item
+      end,
+    }
+
     conf.mapping["<CR>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.close()
