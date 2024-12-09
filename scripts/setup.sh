@@ -9,6 +9,8 @@
 ## 4) .tmux_conf -> ~/projects/personal/dotfiles/tmux.conf
 ## 5) scripts -> ~/projects/personal/dotfiles/scripts/
 ## 6) .gitconfig -> ~/projects/personal/dotfiles/gitconfig
+## 7) .config/nvim -> ~/projects/personal/dotfiles/nvim/
+## 8) cptemps -> ~/projects/personal/codeprompts/src/templates/
 ## 
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml -> ~/projects/personal/dotfiles/mac/aerospace.toml
@@ -59,6 +61,8 @@ delim
 create_symlink "$DOTFILES_DIR/scripts/" "$HOME_DIR/scripts"
 delim
 create_symlink "$DOTFILES_DIR/gitconfig" "$HOME_DIR/.gitconfig"
+delim
+create_symlink "$DOTFILES_DIR/nvim" "$HOME_DIR/.config/nvim"
 delim
 if [ -d ~/projects/personal/codeprompts ]; then
     create_symlink "$HOME_DIR/projects/personal/codeprompts/src/templates" "$HOME_DIR/cptemps"
