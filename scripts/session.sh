@@ -1,11 +1,13 @@
 #!/bin/bash
 
+SEARCH_PATHS=(~/projects/hive ~/projects/personal ~/projects/misc ~/projects ~/scripts)
+
 # If an argument is provided, use it as the selected directory
 if [[ $# -eq 1 ]]; then
   selected=$1
 else
   # Otherwise, use fzf to interactively select a directory from the specified paths
-  selected=$(find ~/projects/hive ~/projects/personal ~/projects/misc ~/projects ~/scripts -mindepth 1 -maxdepth 1 -type d | fzf)
+  selected=$(find "${SEARCH_PATHS[@]}" -mindepth 1 -maxdepth 1 -type d | fzf)
 fi
 
 # If no directory is selected (user pressed Esc or fzf returned nothing), exit
