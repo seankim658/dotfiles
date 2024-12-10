@@ -102,3 +102,5 @@ tmux 3.5a
 - At some point should split out any config settings from my `plugins/init.lua` for consistencies sake.
 - Figure out what to do with the `eslintrc.json` file.
 - Add some custom snippets.
+- Fix conflict with `<leader>d` to prevent delay in bringing up diagnostic window.
+- Fix formatter in statusline to use lsp formatter if no dedicated formatter.
