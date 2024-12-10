@@ -12,6 +12,10 @@ map("n", "<leader><CR>", 'm`O<Esc>``', { desc = "New line above" }) -- Create ne
 map("n", "<leader>tn", ":tabnew<CR>", { desc = "New tab" })
 map("n", "<leader>tm", ":tabclose<CR>", { desc = "Close tab" })
 
+-- Make j and k work with wrapped lines
+map({ "n", "x" }, "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { expr = true, desc = "Move down (wrapped-aware)" })
+map({ "n", "x" }, "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { expr = true, desc = "Move up (wrapped-aware)" })
+
 -- Window resizing.
 -- map("n", "<A-1>", "<C-w>+", { desc = "Increase window height" })
 -- map("n", "<A-2>", "<C-w>-", { desc = "Decrease window height" })
