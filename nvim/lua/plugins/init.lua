@@ -11,11 +11,6 @@ return {
     end,
   },
   {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
-  },
-  {
     "mechatroner/rainbow_csv",
     ft = { "tsv", "csv" },
   },
@@ -33,8 +28,25 @@ return {
     end,
   },
   {
+    "toppair/peek.nvim",
+    ft = { "markdown" },
+    build = "deno task --quiet build:fast",
+    opts = {
+      app = "browser",
+      theme = "dark",
+    },
+    keys = {
+      { "<leader>mp", "<cmd>PeekOpen<cr>", desc = "Markdown Preview (Peek)" },
+      { "<leader>mc", "<cmd>PeekClose<cr>", desc = "Markdown Preview Close (Peek)" },
+    },
+    init = function()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
+  },
+  {
     "folke/trouble.nvim",
-    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    opts = {},
     cmd = "Trouble",
     keys = {
       {
