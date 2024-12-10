@@ -9,6 +9,7 @@ These configs are used across MacOS and Linux.
 - [Nvim](#nvim)
 - [Scripts](#scripts)
 - [Tmux](#tmux)
+- [TODO](#todo)
 
 ---
 
@@ -94,3 +95,10 @@ MacOS:
 ```
 tmux 3.5a
 ```
+
+## TODO
+
+- Peek markdown plugin isn't lazy loading only on `.md` files, not sure why.
+- At some point should split out any config settings from my `plugins/init.lua` for consistencies sake.
+- Figure out what to do with the `eslintrc.json` file.
+- Add some custom snippets.
