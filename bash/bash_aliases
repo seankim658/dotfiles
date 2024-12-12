@@ -5,6 +5,7 @@ alias tmla='tmux a'
 alias tmks='tmux kill-server'
 alias senv='source env/bin/activate'
 alias droplet='ssh skim@159.89.85.23'
+alias codepc='codeprompt . --diff-staged -t ~/cptemps/git_commit.hbs'
 
 alias hivetst='ssh skim658@hivelab.tst.biochemistry.gwu.edu'
 alias hiveprd='ssh skim658@hivelab.biochemistry.gwu.edu'
