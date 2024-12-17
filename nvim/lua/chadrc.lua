@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-  theme = "ayu_dark",
+  theme = "bearded-arc",
 
   -- hl_override = {
   -- 	Comment = { italic = true },
@@ -24,9 +24,21 @@ M.ui = {
         local bufnr = vim.api.nvim_get_current_buf()
         local formatters = conform.list_formatters(bufnr)
 
+        -- Check if LSP can format
+        local clients = vim.lsp.get_active_clients { bufnr = bufnr }
+        local can_lsp_format = false
+        for _, client in ipairs(clients) do
+          if client.server_capabilities.documentFormattingProvider then
+            can_lsp_format = true
+            break
+          end
+        end
+
         if formatters and #formatters > 0 then
           -- Get the first formatter name
-          return "%#St_LspStatus#" .. "󰉼 " .. formatters[1].name
+          return "%#St_LspStatus#" .. "󰉼 " .. formatters[1].name .. " "
+        elseif can_lsp_format then
+          return "%#St_LspStatus#" .. "󰉼  LSP "
         end
         return ""
       end,
