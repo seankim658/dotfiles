@@ -100,4 +100,5 @@ return {
   },
   require "configs.cmp",
   require "configs.nvim-tree",
+  require "configs.nvim-treesitter",
 }
