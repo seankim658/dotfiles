@@ -1,3 +1,5 @@
+local globals = require "globals"
+
 return {
   {
     "stevearc/conform.nvim",
@@ -89,7 +91,7 @@ return {
       workspaces = {
         {
           name = "macos",
-          path = "~/Documents/macos_vault/",
+          path = globals.obsidian_vaults.macos,
         },
       },
     },

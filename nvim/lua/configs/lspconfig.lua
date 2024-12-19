@@ -2,8 +2,9 @@
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
+local globals = require "globals"
 
-local servers = { "html", "cssls", "bashls", "marksman", "clangd", "rust_analyzer" }
+local servers = { "html", "cssls", "bashls", "clangd", "rust_analyzer" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -21,6 +22,29 @@ end
 --   on_init = nvlsp.on_init,
 --   capabilities = nvlsp.capabilities,
 -- }
+
+-- Don't load marksman in my obsidian vault
+lspconfig.marksman.setup {
+  on_attach = function(client, bufnr)
+    -- Get the full path of the current file
+    local file_path = vim.fn.expand "%:p"
+    -- Get the expanded vault path
+    local vault_path = vim.fn.expand(globals.obsidian_vaults.macos)
+
+    -- If file is in vault, don't attach marksman
+    if string.match(file_path, "^" .. vault_path) then
+      vim.schedule(function()
+        vim.cmd "LspStop marksman"
+      end)
+      return
+    end
+
+    -- Otherwise, proceed with normal attachment
+    nvlsp.on_attach(client, bufnr)
+  end,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+}
 
 -- Python pyright virtualenv support
 local function get_python_path()
