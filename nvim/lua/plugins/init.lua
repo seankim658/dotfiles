@@ -96,6 +96,22 @@ return {
       },
     },
   },
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+    },
+    config = function()
+      require("luasnip").setup {
+        history = true,
+        updateevents = "TextChanged,TextChangedI",
+      }
+
+      require("luasnip.loaders.from_lua").load {
+        paths = vim.fn.stdpath "config" .. "/lua/snippets",
+      }
+    end,
+  },
   require "configs.cmp",
   require "configs.nvim-tree",
   require "configs.nvim-treesitter",
