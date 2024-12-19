@@ -15,12 +15,6 @@ return {
     ft = { "tsv", "csv" },
   },
   {
-    "folke/trouble.nvim",
-    lazy = false,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {},
-  },
-  {
     "mfussenegger/nvim-lint",
     event = "VeryLazy",
     config = function()
@@ -46,6 +40,8 @@ return {
   },
   {
     "folke/trouble.nvim",
+    lazy = false,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {},
     cmd = "Trouble",
     keys = {
