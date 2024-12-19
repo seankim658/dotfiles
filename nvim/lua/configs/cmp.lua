@@ -18,12 +18,7 @@ return {
       end,
     }
 
-    conf.mapping["<CR>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.close()
-      end
-      fallback()
-    end, { "i", "s" })
+    conf.mapping["<CR>"] = nil
 
     conf.mapping["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
