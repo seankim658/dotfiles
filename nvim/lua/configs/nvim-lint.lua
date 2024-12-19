@@ -44,13 +44,45 @@ lint.linters_by_ft = {
 }
 
 -- Configure mypy specifically
-lint.linters.mypy.cmd = get_mypy_command() -- Use virtualenv mypy if available
-lint.linters.mypy.args = {
-  "--show-column-numbers", -- Show column numbers in output
-  "--hide-error-context", -- Hide code context in errors
-  "--no-error-summary", -- Don't show error summary
-  -- "--no-pretty", -- Don't use pretty output formatting
+lint.linters.mypy = {
+  cmd = get_mypy_command(),
+  stdin = false,
+  ignore_exitcode = true,
+  args = {
+    '--show-column-numbers',
+    '--show-error-end',
+    '--hide-error-context',
+    '--no-color-output',
+    '--no-error-summary',
+    '--no-pretty',
+    '--python-executable',
+    function()
+      return vim.fn.exepath('python3') or vim.fn.exepath('python')
+    end
+  },
+  parser = require('lint.parser').from_pattern(
+    '([^:]+):(%d+):(%d+):(%d+):(%d+): (%a+): (.*) %[(%a[%a-]+)%]',
+    {'file', 'lnum', 'col', 'end_lnum', 'end_col', 'severity', 'message', 'code'},
+    {
+      error = vim.diagnostic.severity.ERROR,
+      warning = vim.diagnostic.severity.WARN,
+      note = vim.diagnostic.severity.HINT,
+    },
+    { ['source'] = 'mypy' },
+    { end_col_offset = 0 }
+  )
 }
+-- lint.linters.mypy.cmd = get_mypy_command() -- Use virtualenv mypy if available
+-- print("MyPy cmd path: " .. lint.linters.mypy.cmd)
+-- lint.linters.mypy.args = {
+--   "--show-column-numbers",
+--   "--show-error-end",
+--   "--hide-error-context",
+--   "--no-color-output",
+--   "--no-error-summary",
+--   "--no-pretty",
+--   "--python-executable",
+-- }
 
 -- Set up automatic linting
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
