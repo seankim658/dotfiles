@@ -18,6 +18,7 @@ return {
       -- scripting
       "python",
       "bash",
+      "go",
       -- markup
       "markdown",
       "markdown_inline",
