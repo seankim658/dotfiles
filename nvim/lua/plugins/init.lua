@@ -94,6 +94,45 @@ return {
           path = globals.obsidian_vaults.macos,
         },
       },
+      mappings = {
+        ["<CR>"] = nil,
+        ["<leader>ob"] = {
+          action = function()
+            vim.cmd "ObsidianBackLinks"
+          end,
+          opts = {desc = "Show obsidian backlinks", buffer = true},
+        },
+        ["<leader>on"] = {
+          action = function()
+            vim.cmd "ObsidianNew"
+          end,
+          opts = {desc = "New obsidian note", buffer = true},
+        },
+        ["<leader>os"] = {
+          action = function()
+            vim.cmd "ObsidianQuickSwitch"
+          end,
+          opts = {desc = "Obsidian quick switch", buffer = true},
+        },
+        ["<leader>of"] = {
+          action = function()
+            vim.cmd "ObsidianSearch"
+          end,
+          opts = {desc = "Search obsidian notes", buffer = true},
+        },
+        ["<leader>oo"] = {
+          action = function()
+            vim.cmd "ObsidianOpen"
+          end,
+          opts = {desc = "Open in Obsidian", buffer = true},
+        },
+        ["<leader>ot"] = {
+          action = function()
+            vim.cmd "ObsidianTemplate"
+          end,
+          opts = {desc = "Insert obsidian template", buffer = true},
+        },
+      },
     },
   },
   {
