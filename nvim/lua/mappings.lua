@@ -6,7 +6,7 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 
 map("i", "jj", "<ESC>") -- `jj` to exit insert mode
-map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Float diagnostic"})
+map("n", "<leader>dd", vim.diagnostic.open_float, { desc = "Float diagnostic"})
 map("n", "<CR>", 'm`o<Esc>``') -- Create newline below cursor without entering insert mode
 map("n", "<leader><CR>", 'm`O<Esc>``', { desc = "New line above" }) -- Create newline above cursor without entering insert mode
 map("n", "<leader>tn", ":tabnew<CR>", { desc = "New tab" })
