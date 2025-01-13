@@ -67,7 +67,7 @@ delim
 if [ -d ~/projects/personal/codeprompts ]; then
     create_symlink "$HOME_DIR/projects/personal/codeprompts/cli/src/templates" "$HOME_DIR/cptemps"
     delim
-    create_symlink "$DOTFILES_DIR/codepromp.toml" "$HOME_DIR/.codeprompt.toml"
+    create_symlink "$DOTFILES_DIR/codeprompt.toml" "$HOME_DIR/.codeprompt.toml"
     delim
 fi
 
