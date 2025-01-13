@@ -65,7 +65,9 @@ delim
 create_symlink "$DOTFILES_DIR/nvim" "$HOME_DIR/.config/nvim"
 delim
 if [ -d ~/projects/personal/codeprompts ]; then
-    create_symlink "$HOME_DIR/projects/personal/codeprompts/src/templates" "$HOME_DIR/cptemps"
+    create_symlink "$HOME_DIR/projects/personal/codeprompts/cli/src/templates" "$HOME_DIR/cptemps"
+    delim
+    create_symlink "$DOTFILES_DIR/codepromp.toml" "$HOME_DIR/.codeprompt.toml"
     delim
 fi
 

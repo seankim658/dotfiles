@@ -162,4 +162,4 @@ export NVM_DIR="$HOME/.nvm"
 # --------------------------
 # Custom Completions
 # --------------------------
-source ~/projects/personal/codeprompts/completions/codeprompt-completions.bash
+source ~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash
