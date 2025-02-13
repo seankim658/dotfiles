@@ -16,11 +16,12 @@
   cm = commit -m
   p = push
   d = diff
+  ds = diff --staged
   b = branch
+  ba = branch -a
   bd = branch -d
   bD = branch -D
   co = checkout
   cob = checkout -b
-  ds = diff --staged
   lg = log --graph
   lo = log --oneline
