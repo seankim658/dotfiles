@@ -30,6 +30,8 @@ return {
       "rust",
       -- documentation
       "comment",
+      -- other
+      "sql",
     })
 
     -- Override highlight config
