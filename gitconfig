@@ -15,6 +15,10 @@
   c = commit
   cm = commit -m
   p = push
+  pu = pull
+  f = fetch
+  fp = fetch -p
+  fa = fetch --all
   d = diff
   ds = diff --staged
   b = branch
