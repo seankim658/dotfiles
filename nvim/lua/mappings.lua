@@ -27,6 +27,11 @@ map(
 )
 
 -- Window resizing.
+map("n", "<leader>w+", "<cmd>resize +5<CR>", { desc = "Increase window height" })
+map("n", "<leader>w-", "<cmd>resize -5<CR>", { desc = "Decrease window height" })
+map("n", "<leader>w<", "<cmd>vertical resize -5<CR>", { desc = "Decrease window width" })
+map("n", "<leader>w>", "<cmd>vertical resize +5<CR>", { desc = "Increase window width" })
+map("n", "<leader>w=", "<C-w>=", { desc = "Equal window dimensions" })
 -- map("n", "<A-1>", "<C-w>+", { desc = "Increase window height" })
 -- map("n", "<A-2>", "<C-w>-", { desc = "Decrease window height" })
 -- map("n", "<A-3>", "<C-w><", { desc = "Decrease window width" })
