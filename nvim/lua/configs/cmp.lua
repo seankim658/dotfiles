@@ -20,6 +20,18 @@ return {
 
     conf.mapping["<CR>"] = nil
 
+    conf.mapping["<C-t>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item { count = 5 }
+      end
+    end, { "i", "s" })
+
+    conf.mapping["<C-l>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_next_item { count = 5 }
+      end
+    end, { "i", "s" })
+
     conf.mapping["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         local entry = cmp.get_selected_entry()
