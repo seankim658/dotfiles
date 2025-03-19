@@ -1,7 +1,10 @@
--- Loads NVChad's default keymappings first as a base.
+-- Loads NVChad's default keymappings first as a base
 require "nvchad.mappings"
 
--- My mappings.
+-- Import utils
+local utils = require "utils"
+
+-- My mappings
 
 local map = vim.keymap.set
 
@@ -26,7 +29,7 @@ map(
   { expr = true, desc = "Move up (wrapped-aware)" }
 )
 
--- Window resizing.
+-- Window resizing
 map("n", "<leader>w+", "<cmd>resize +5<CR>", { desc = "Increase window height" })
 map("n", "<leader>w-", "<cmd>resize -5<CR>", { desc = "Decrease window height" })
 map("n", "<leader>w<", "<cmd>vertical resize -5<CR>", { desc = "Decrease window width" })
@@ -70,6 +73,9 @@ map("n", "s", '"_s', { desc = "Substitute without yanking" })
 map("v", "s", '"_s', { desc = "Substitute without yanking" })
 map("n", "S", '"_S', { desc = "Substitute without yanking" })
 map("v", "S", '"_s', { desc = "Substitute without yanking" })
+
+-- Timestamp mapping
+map("n", "<leader>dt", utils.time.insert_timestamp, { desc = "Insert timestamp" })
 
 -- Close all buffers except current one
 map("n", "<leader>bo", function()
