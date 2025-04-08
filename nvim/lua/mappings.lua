@@ -85,3 +85,13 @@ map("n", "<leader>bv", utils.buffer.close_nonvisible_buffers, { desc = "Close al
 
 -- Export diagnostics to markdown
 map("n", "<leader>xm", utils.diagnostic.export_as_markdown, { desc = "Export diagnostics as markdown" })
+
+-- Add frontmatter to markdown files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    map("n", "<leader>mf", function()
+      require("utils").markdown.insert_frontmatter()
+    end, { buffer = true, desc = "Insert markdown frontmatter" })
+  end,
+})
