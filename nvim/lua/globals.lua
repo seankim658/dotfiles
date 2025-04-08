@@ -1,3 +1,6 @@
+-- DEPRECATED
+-- I no longer use obsidian
+
 local M = {}
 
 M.obsidian_vaults = {
