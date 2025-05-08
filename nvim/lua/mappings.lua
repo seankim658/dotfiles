@@ -91,7 +91,12 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
     map("n", "<leader>mf", function()
-      require("utils").markdown.insert_frontmatter()
+      utils.markdown.insert_frontmatter()
     end, { buffer = true, desc = "Insert markdown frontmatter" })
   end,
 })
+
+-- Character swapping
+map("n", "<leader>sw", function()
+  utils.typo.swap_chars()
+end, { desc = "Swap characters with next" })
