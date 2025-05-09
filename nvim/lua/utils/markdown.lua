@@ -19,6 +19,8 @@ M.insert_frontmatter = function()
     "---",
     "> title: " .. title,
     ">",
+    "> category: ",
+    ">",
     "> tags: ",
     ">",
     "> created: " .. datetime,
