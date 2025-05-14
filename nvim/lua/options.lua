@@ -7,7 +7,7 @@ local option = vim.o
 option.relativenumber = true
 option.colorcolumn = "150"
 
-vim.opt_local.conceallevel = 2
+-- vim.opt_local.conceallevel = 2
 
 -- o.cursorlineopt ='both' -- to enable cursorline!
 
