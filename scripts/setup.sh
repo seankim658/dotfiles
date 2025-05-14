@@ -11,6 +11,7 @@
 ## 6) .gitconfig -> ~/projects/personal/dotfiles/gitconfig
 ## 7) .config/nvim -> ~/projects/personal/dotfiles/nvim/
 ## 8) cptemps -> ~/projects/personal/codeprompts/src/templates/
+## 9) .codeprompts.toml -> ~/projects/personal/dotfiles/codeprompts.toml
 ## 
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml -> ~/projects/personal/dotfiles/mac/aerospace.toml
