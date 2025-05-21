@@ -2,7 +2,7 @@
 
 SEARCH_PATHS=(~/projects/hive ~/projects/personal ~/projects/misc ~/projects ~/scripts)
 
-# Determines whether to open seaprate `frontend/` and `backend/` windows
+# Determines whether to open separate `frontend/` and `backend/` windows
 is_split_project=false
 
 # Parse command line args
@@ -43,7 +43,8 @@ create_split_session() {
   local project_dir=$2
 
   # Create new session with frontend window
-  tmux new-session -ds $session_name -c "$project_dir/frontend" -n frontend
+  tmux new-session -ds $session_name -c "$project_dir" -n frontend
+  tmux send-keys -t $session_name:0 "cd frontend" C-m
 
   # Create backend window
   tmux new-window -t $session_name:1 -n backend -c "$project_dir/backend"
