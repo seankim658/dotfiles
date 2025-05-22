@@ -52,6 +52,10 @@ create_split_session() {
   # Create shell window at project root
   tmux new-window -t $session_name:2 -n shell -c "$project_dir"
 
+  # Create run split window
+  tmux new-window -t $session_name:3 -n run -c "$project_dir/frontend"
+  tmux split-window -t $session_name:3 -v -c "$project_dir/backend"
+
   # Select frontend window
   tmux select-window -t $session_name:0
 }
