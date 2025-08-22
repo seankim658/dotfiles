@@ -9,7 +9,6 @@ These configs are used across MacOS and Linux.
 - [Nvim](#nvim)
 - [Scripts](#scripts)
 - [Tmux](#tmux)
-- [TODO](#todo)
 
 ---
 

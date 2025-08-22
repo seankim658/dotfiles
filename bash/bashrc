@@ -105,6 +105,11 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# Local aliases
+if [ -f ~/.bash_aliases_local ]; then
+    . ~/.bash_aliases_local
+fi
+
 # --------------------------
 # Completion Configuration
 # --------------------------
