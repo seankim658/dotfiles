@@ -125,6 +125,8 @@ return {
 
       disable_frontmatter = true,
 
+      title_as_header = false,
+
       templates = {
         subdir = "templates",
         date_format = "%Y-%m-%d",

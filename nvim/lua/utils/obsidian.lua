@@ -9,6 +9,100 @@ local function ensure_vault_root()
   end
 end
 
+local function get_subdirectories(path)
+  local subdirs = {}
+  local handle = vim.loop.fs_scandir(path)
+
+  if handle then
+    while true do
+      local name, type = vim.loop.fs_scandir_next(handle)
+      if not name then
+        break
+      end
+
+      if type == "directory" and not name:match "^%." then
+        table.insert(subdirs, name)
+      end
+    end
+  end
+
+  table.sort(subdirs)
+  return subdirs
+end
+
+-- TODO : Should generalize this at some point, assuming telescope for now
+local function pick_directory_with_telescope(base_folder, callback)
+  local vault_path = globals.get_vault_path "main"
+  local full_base_path = vault_path .. base_folder
+
+  local subdirs = get_subdirectories(full_base_path)
+
+  local options = {}
+
+  table.insert(options, {
+    display = "📁 " .. base_folder .. "/ (root)",
+    value = base_folder,
+    is_root = true,
+  })
+
+  for _, subdir in ipairs(subdirs) do
+    table.insert(options, {
+      display = "📁 " .. base_folder .. "/" .. subdir .. "/",
+      value = base_folder .. "/" .. subdir,
+      is_existing = true,
+    })
+  end
+
+  table.insert(options, {
+    display = "+ Create new subdirectory in " .. base_folder .. "/",
+    value = "CREATE_NEW",
+    is_create_new = true,
+  })
+
+  -- Using telescope
+  local pickers = require "telescope.pickers"
+  local finders = require "telescope.finders"
+  local conf = require("telescope.config").values
+  local actions = require "telescope.actions"
+  local action_state = require "telescope.actions.state"
+
+  pickers
+    .new({}, {
+      prompt_title = "Select Directory for Note",
+      finder = finders.new_table {
+        results = options,
+        entry_maker = function(entry)
+          return {
+            value = entry,
+            display = entry.display,
+            ordinal = entry.display,
+          }
+        end,
+      },
+      sorter = conf.generic_sorter {},
+      attach_mappings = function(prompt_bufnr, _)
+        actions.select_default:replace(function()
+          actions.close(prompt_bufnr)
+          local selection = action_state.get_selected_entry()
+
+          if selection.value.is_create_new then
+            vim.ui.input({ prompt = "New subdirectory name: " }, function(new_subdir)
+              if new_subdir and new_subdir ~= "" then
+                local new_path = base_folder .. "/" .. new_subdir
+                vim.fn.mkdir(vault_path .. new_path, "p")
+                callback(new_path)
+              end
+            end)
+          else
+            callback(selection.value.value)
+          end
+        end)
+        return true
+      end,
+    })
+    :find()
+end
+
 -- Function to create a new note with template
 M.new_note = function()
   local folders = {
@@ -55,6 +149,7 @@ M.new_note_with_template = function()
       name = "Daily",
       folder = "daily",
       template = "daily",
+      use_telescope = false,
       filename_format = function()
         return os.date "%Y-%m-%d"
       end,
@@ -63,6 +158,7 @@ M.new_note_with_template = function()
       name = "Project",
       folder = "projects",
       template = "project",
+      use_telescope = true,
       filename_format = function(title)
         return title:gsub("%s+", "-"):lower()
       end,
@@ -71,6 +167,7 @@ M.new_note_with_template = function()
       name = "Meeting",
       folder = "meetings",
       template = "meeting",
+      use_telescope = true,
       filename_format = function(title)
         return os.date "%Y-%m-%d" .. "-" .. title:gsub("%s+", "-"):lower()
       end,
@@ -79,6 +176,7 @@ M.new_note_with_template = function()
       name = "Learning",
       folder = "learning",
       template = "learning",
+      use_telescope = true,
       filename_format = function(title)
         return title:gsub("%s+", "-"):lower()
       end,
@@ -87,6 +185,7 @@ M.new_note_with_template = function()
       name = "Idea",
       folder = "ideas",
       template = "idea",
+      use_telescope = true,
       filename_format = function(title)
         return title:gsub("%s+", "-"):lower()
       end,
@@ -95,6 +194,7 @@ M.new_note_with_template = function()
       name = "Quick Note (No Template)",
       folder = ".",
       template = nil,
+      use_telescope = false,
       filename_format = function(title)
         return title:gsub("%s+", "-"):lower()
       end,
@@ -149,62 +249,72 @@ M.new_daily_note = function()
 end
 
 M.new_project_note = function()
-  vim.ui.input({ prompt = "Project name: " }, function(title)
-    if title then
-      ensure_vault_root()
-      local filename = title:gsub("%s+", "-"):lower()
-      local full_path = "projects/" .. filename
+  pick_directory_with_telescope("projects", function(chosen_path)
+    vim.ui.input({ prompt = "Project note name: " }, function(title)
+      if title then
+        ensure_vault_root()
+        local filename = title:gsub("%s+", "-"):lower()
+        local full_path = chosen_path .. "/" .. filename
 
-      vim.cmd("ObsidianNew " .. full_path)
-      vim.defer_fn(function()
-        vim.cmd "ObsidianTemplate project"
-      end, 100)
-    end
+        vim.cmd("ObsidianNew " .. full_path)
+        vim.defer_fn(function()
+          vim.cmd "ObsidianTemplate project"
+        end, 100)
+      end
+    end)
   end)
 end
 
 M.new_meeting_note = function()
-  vim.ui.input({ prompt = "Meeting title: " }, function(title)
-    if title then
-      ensure_vault_root()
-      local filename = os.date "%Y-%m-%d" .. "-" .. title:gsub("%s+", "-"):lower()
-      local full_path = "meetings/" .. filename
+  M.new_meeting_note = function()
+    pick_directory_with_telescope("meetings", function(chosen_path)
+      vim.ui.input({ prompt = "Meeting title: " }, function(title)
+        if title then
+          ensure_vault_root()
+          local filename = os.date "%Y-%m-%d" .. "-" .. title:gsub("%s+", "-"):lower()
+          local full_path = chosen_path .. "/" .. filename
 
-      vim.cmd("ObsidianNew " .. full_path)
-      vim.defer_fn(function()
-        vim.cmd "ObsidianTemplate meeting"
-      end, 100)
-    end
-  end)
+          vim.cmd("ObsidianNew " .. full_path)
+          vim.defer_fn(function()
+            vim.cmd "ObsidianTemplate meeting"
+          end, 100)
+        end
+      end)
+    end)
+  end
 end
 
 M.new_learning_note = function()
-  vim.ui.input({ prompt = "Learning topic: " }, function(title)
-    if title then
-      ensure_vault_root()
-      local filename = title:gsub("%s+", "-"):lower()
-      local full_path = "learning/" .. filename
+  pick_directory_with_telescope("learning", function(chosen_path)
+    vim.ui.input({ prompt = "Learning topic: " }, function(title)
+      if title then
+        ensure_vault_root()
+        local filename = title:gsub("%s+", "-"):lower()
+        local full_path = chosen_path .. "/" .. filename
 
-      vim.cmd("ObsidianNew " .. full_path)
-      vim.defer_fn(function()
-        vim.cmd "ObsidianTemplate learning"
-      end, 100)
-    end
+        vim.cmd("ObsidianNew " .. full_path)
+        vim.defer_fn(function()
+          vim.cmd "ObsidianTemplate learning"
+        end, 100)
+      end
+    end)
   end)
 end
 
 M.new_idea_note = function()
-  vim.ui.input({ prompt = "Idea title: " }, function(title)
-    if title then
-      ensure_vault_root()
-      local filename = title:gsub("%s+", "-"):lower()
-      local full_path = "ideas/" .. filename
+  pick_directory_with_telescope("ideas", function(chosen_path)
+    vim.ui.input({ prompt = "Idea title: " }, function(title)
+      if title then
+        ensure_vault_root()
+        local filename = title:gsub("%s+", "-"):lower()
+        local full_path = chosen_path .. "/" .. filename
 
-      vim.cmd("ObsidianNew " .. full_path)
-      vim.defer_fn(function()
-        vim.cmd "ObsidianTemplate idea"
-      end, 100)
-    end
+        vim.cmd("ObsidianNew " .. full_path)
+        vim.defer_fn(function()
+          vim.cmd "ObsidianTemplate idea"
+        end, 100)
+      end
+    end)
   end)
 end
 
