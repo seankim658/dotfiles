@@ -169,6 +169,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
       map("n", "<leader>osl", function()
         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "learning")
       end, { buffer = true, desc = "Search learning notes" })
+
+      map("n", "<leader>osi", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "ideas")
+      end, { buffer = true, desc = "Search idea notes" })
     end
   end,
 })
