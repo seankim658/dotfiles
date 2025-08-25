@@ -3,6 +3,7 @@ require "nvchad.mappings"
 
 -- Import utils
 local utils = require "utils"
+local globals = require "globals"
 
 -- My mappings
 
@@ -90,3 +91,97 @@ map("n", "<leader>xm", utils.diagnostic.export_as_markdown, { desc = "Export dia
 map("n", "<leader>sw", function()
   utils.typo.swap_chars()
 end, { desc = "Swap characters with next" })
+
+-- Obsidian mappings
+-- Function to check if current file is in Obsidian vault
+local function is_in_obsidian_vault()
+  local current_file = vim.fn.expand "%:p"
+  local vault_path = globals.get_vault_path "main"
+  if not vault_path then
+    return false
+  end
+  return current_file:find(vault_path, 1, true) == 1
+end
+
+-- Obsidian mappings - only load when in vault
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
+  pattern = "*",
+  callback = function()
+    if is_in_obsidian_vault() and vim.bo.filetype == "markdown" then
+      -- Set conceallevel for Obsidian UI features
+      vim.opt_local.conceallevel = 2
+
+      local obsidian_utils = utils.obsidian
+
+      map("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<cr>", { buffer = true, desc = "Quick switch notes" })
+      map("n", "<leader>oT", "<cmd>ObsidianTOC<cr>", { buffer = true, desc = "Table of contents" })
+      map("n", "<leader>ox", "<cmd>ObsidianToggleCheckbox<cr>", { buffer = true, desc = "Toggle checkbox" })
+
+      -- Note creation and navigation
+      map(
+        "n",
+        "<leader>on",
+        obsidian_utils.new_note,
+        { buffer = true, desc = "Create new Obsidian note (choose folder)" }
+      )
+      map(
+        "n",
+        "<leader>ont",
+        obsidian_utils.new_note_with_template,
+        { buffer = true, desc = "Create new note with template" }
+      )
+      map("n", "<leader>ond", obsidian_utils.new_daily_note, { buffer = true, desc = "Create new daily note" })
+      map("n", "<leader>onp", obsidian_utils.new_project_note, { buffer = true, desc = "Create new project note" })
+      map("n", "<leader>onm", obsidian_utils.new_meeting_note, { buffer = true, desc = "Create new meeting note" })
+      map("n", "<leader>onl", obsidian_utils.new_learning_note, { buffer = true, desc = "Create new learning note" })
+      map("n", "<leader>oni", obsidian_utils.new_idea_note, { buffer = true, desc = "Create new idea note" })
+      map("n", "<leader>ono", obsidian_utils.new_other_note, { buffer = true, desc = "Create new other note" })
+
+      map("n", "<leader>os", obsidian_utils.search_notes, { buffer = true, desc = "Search Obsidian notes" })
+      map("n", "<leader>od", obsidian_utils.open_daily_note, { buffer = true, desc = "Open today's daily note" })
+      map("n", "<leader>ow", obsidian_utils.open_weekly_note, { buffer = true, desc = "Open weekly notes" })
+      map("n", "<leader>oo", obsidian_utils.open_in_app, { buffer = true, desc = "Open current note in Obsidian app" })
+      map("n", "<leader>ot", "<cmd>ObsidianTags<cr>", { buffer = true, desc = "Search Obsidian tags" })
+
+      -- Link operations
+      map("n", "<leader>ol", obsidian_utils.insert_link, { buffer = true, desc = "Insert new Obsidian link" })
+      map("n", "<leader>of", obsidian_utils.follow_link, { buffer = true, desc = "Follow Obsidian link" })
+      map("n", "<leader>ob", obsidian_utils.back_link, { buffer = true, desc = "Show backlinks" })
+
+      -- Note operations
+      map("n", "<leader>or", obsidian_utils.rename_note, { buffer = true, desc = "Rename current note" })
+      map("v", "<leader>oe", obsidian_utils.extract_note, { buffer = true, desc = "Extract selection to new note" })
+      map("n", "<leader>op", obsidian_utils.paste_image, { buffer = true, desc = "Paste image from clipboard" })
+
+      -- Obsidian frontmatter
+      map("n", "<leader>mf", function()
+        obsidian_utils.insert_obsidian_frontmatter()
+      end, { buffer = true, desc = "Insert Obsidian frontmatter" })
+
+      -- Folder-specific search functions
+      map("n", "<leader>osd", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "daily")
+      end, { buffer = true, desc = "Search daily notes" })
+
+      map("n", "<leader>osp", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "projects")
+      end, { buffer = true, desc = "Search project notes" })
+
+      map("n", "<leader>osm", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "meetings")
+      end, { buffer = true, desc = "Search meeting notes" })
+
+      map("n", "<leader>osl", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "learning")
+      end, { buffer = true, desc = "Search learning notes" })
+
+      map("n", "<leader>osi", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "ideas")
+      end, { buffer = true, desc = "Search idea notes" })
+
+      map("n", "<leader>oso", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "other")
+      end, { buffer = true, desc = "Search other notes" })
+    end
+  end,
+})

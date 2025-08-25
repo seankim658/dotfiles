@@ -2,7 +2,7 @@
 
 SESSION_NAME="obsidian"
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  VAULT_PATH="$HOME/Documents/macos_vault/"
+  VAULT_PATH="$HOME/Documents/obsidian_vault/"
 else
   VAULT_PATH="$HOME/Documents/legion_vault/"
 fi

@@ -1,11 +1,7 @@
--- DEPRECATED
--- I no longer use obsidian
-
 local M = {}
 
 M.obsidian_vaults = {
-  macos = "~/Documents/macos_vault/",
-  linux = "~/Documents/linux_vault/",
+  main = "~/Documents/obsidian_vault/",
 }
 
 M.get_vault_path = function(vault_name)
