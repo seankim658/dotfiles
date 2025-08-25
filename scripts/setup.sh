@@ -15,6 +15,7 @@
 ## 
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml -> ~/projects/personal/dotfiles/mac/aerospace.toml
+## 2) .config/ghostty/config -> ~/projects/personal/dotfiles/mac/ghostty
 
 PROJ_DIR=~/projects/
 PERSONAL_DIR="${PROJ_DIR}/personal/"
@@ -22,7 +23,6 @@ MISC_DIR="${PROJ_DIR}/misc/"
 
 mkdir -p "$PERSONAL_DIR"
 mkdir -p "$MISC_DIR"
-
 
 DOTFILES_DIR=~/projects/personal/dotfiles/
 HOME_DIR=~
@@ -73,8 +73,11 @@ if [ -d ~/projects/personal/codeprompts ]; then
 fi
 
 # MacOS-specific symlinks
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/mac/aerospace.toml" "$HOME_DIR/.aerospace.toml"
+    delim
+    create_symlink "$DOTFILES_DIR/mac/ghostty" "$HOME_DIR/.config/ghostty/config"
     delim
 fi
 
