@@ -96,22 +96,35 @@ return {
     end,
   },
   {
-    "epwalsh/obsidian.nvim",
+    "obsidian-nvim/obsidian.nvim",
     version = "*",
     lazy = true,
+
     event = function()
       local vault_path = globals.get_vault_path "main"
       if vault_path then
-        return {
-          "BufReadPre " .. vault_path .. "*.md",
-          "BufNewFile " .. vault_path .. "*.md",
-        }
+        local cwd = vim.fn.getcwd()
+        local in_vault_dir = vim.startswith(cwd, vault_path)
+
+        local events = {}
+
+        table.insert(events, "BufReadPre " .. vault_path .. "*.md")
+        table.insert(events, "BufNewFile " .. vault_path .. "*.md")
+
+        if in_vault_dir then
+          table.insert(events, "VimEnter")
+        end
+
+        return events
       end
+
       return {}
     end,
     ft = "markdown",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+      "nvim-telescope/telescope.nvim",
     },
     opts = {
       workspaces = {
@@ -125,7 +138,7 @@ return {
 
       disable_frontmatter = true,
 
-      title_as_header = false,
+      preferred_link_style = "wiki",
 
       templates = {
         subdir = "templates",
@@ -175,16 +188,40 @@ return {
         reference_text = { hl_group = "ObsidianRefText" },
         highlight_text = { hl_group = "ObsidianHighlightText" },
         tags = { hl_group = "ObsidianTag" },
+        block_ids = { hl_group = "ObsidianBlockID" },
+        hl_groups = {
+          ObsidianTodo = { bold = true, fg = "#f78c6c" },
+          ObsidianDone = { bold = true, fg = "#89ddff" },
+          ObsidianRightArrow = { bold = true, fg = "#f78c6c" },
+          ObsidianTilde = { bold = true, fg = "#ff5370" },
+          ObsidianRefText = { underline = true, fg = "#c792ea" },
+          ObsidianExtLinkIcon = { fg = "#c792ea" },
+          ObsidianTag = { italic = true, fg = "#89ddff" },
+          ObsidianBlockID = { italic = true, fg = "#89ddff" },
+          ObsidianHighlightText = { bg = "#75662e" },
+        },
       },
 
       attachments = {
         img_folder = "assets/imgs",
+        img_name_func = function()
+          return string.format("%s-", os.time())
+        end,
       },
 
       yaml_parser = "native",
 
       note_id_func = function(title)
         return title
+      end,
+
+      note_path_func = function(spec)
+        local path = spec.dir / tostring(spec.title)
+        return path:with_suffix ".md"
+      end,
+
+      follow_url_func = function(url)
+        vim.fn.jobstart { "open", url }
       end,
     },
   },

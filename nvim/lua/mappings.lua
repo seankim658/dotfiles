@@ -113,6 +113,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 
       local obsidian_utils = utils.obsidian
 
+      map("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<cr>", { buffer = true, desc = "Quick switch notes" })
+      map("n", "<leader>oT", "<cmd>ObsidianTOC<cr>", { buffer = true, desc = "Table of contents" })
+      map("n", "<leader>ox", "<cmd>ObsidianToggleCheckbox<cr>", { buffer = true, desc = "Toggle checkbox" })
+
       -- Note creation and navigation
       map(
         "n",
@@ -131,6 +135,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
       map("n", "<leader>onm", obsidian_utils.new_meeting_note, { buffer = true, desc = "Create new meeting note" })
       map("n", "<leader>onl", obsidian_utils.new_learning_note, { buffer = true, desc = "Create new learning note" })
       map("n", "<leader>oni", obsidian_utils.new_idea_note, { buffer = true, desc = "Create new idea note" })
+      map("n", "<leader>ono", obsidian_utils.new_other_note, { buffer = true, desc = "Create new other note" })
 
       map("n", "<leader>os", obsidian_utils.search_notes, { buffer = true, desc = "Search Obsidian notes" })
       map("n", "<leader>od", obsidian_utils.open_daily_note, { buffer = true, desc = "Open today's daily note" })
@@ -173,6 +178,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
       map("n", "<leader>osi", function()
         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "ideas")
       end, { buffer = true, desc = "Search idea notes" })
+
+      map("n", "<leader>oso", function()
+        vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "other")
+      end, { buffer = true, desc = "Search other notes" })
     end
   end,
 })
