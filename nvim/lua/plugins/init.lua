@@ -140,6 +140,10 @@ return {
 
       preferred_link_style = "wiki",
 
+      daily_notes = {
+        folder = "daily/"
+      },
+
       templates = {
         subdir = "templates",
         date_format = "%Y-%m-%d",
