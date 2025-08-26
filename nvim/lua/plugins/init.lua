@@ -143,13 +143,16 @@ return {
       templates = {
         subdir = "templates",
         date_format = "%Y-%m-%d",
-        time_format = "%H:%M",
+        time_format = "%I:%M:%S %p %Z",
         substitutions = {
           yesterday = function()
             return os.date("%Y-%m-%d", os.time() - 86400)
           end,
           tomorrow = function()
             return os.date("%Y-%m-%d", os.time() + 86400)
+          end,
+          timestamp = function()
+            return os.date("%A, %d-%b-%y %I:%M:%S%p %Z", os.time())
           end,
         },
       },
