@@ -102,8 +102,14 @@ return {
 
     event = function()
       local vault_path = globals.get_vault_path "main"
+      print("Vault path:", vim.inspect(vault_path))
+
       if vault_path then
         local cwd = vim.fn.getcwd()
+
+        vault_path = vault_path:gsub("/$", "")
+        cwd = cwd:gsub("/$", "")
+
         local in_vault_dir = vim.startswith(cwd, vault_path)
 
         local events = {}
@@ -120,7 +126,7 @@ return {
 
       return {}
     end,
-    ft = "markdown",
+
     dependencies = {
       "nvim-lua/plenary.nvim",
       "hrsh7th/nvim-cmp",
@@ -141,7 +147,7 @@ return {
       preferred_link_style = "wiki",
 
       daily_notes = {
-        folder = "daily/"
+        folder = "daily/",
       },
 
       templates = {
