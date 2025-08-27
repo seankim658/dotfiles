@@ -143,6 +143,48 @@ M.new_note = function()
   end)
 end
 
+-- Function to pick template with telescope
+local function pick_template_with_telescope(templates, callback)
+  local pickers = require "telescope.pickers"
+  local finders = require "telescope.finders"
+  local conf = require("telescope.config").values
+  local actions = require "telescope.actions"
+  local action_state = require "telescope.actions.state"
+
+  local template_options = {}
+  for _, template in ipairs(templates) do
+    table.insert(template_options, {
+      display = "📄 " .. template .. ".md",
+      value = template,
+    })
+  end
+
+  pickers
+    .new({}, {
+      prompt_title = "Select Learning Template",
+      finder = finders.new_table {
+        results = template_options,
+        entry_maker = function(entry)
+          return {
+            value = entry.value,
+            display = entry.display,
+            ordinal = entry.display,
+          }
+        end,
+      },
+      sorter = conf.generic_sorter {},
+      attach_mappings = function(prompt_bufnr, _)
+        actions.select_default:replace(function()
+          actions.close(prompt_bufnr)
+          local selection = action_state.get_selected_entry()
+          callback(selection.value)
+        end)
+        return true
+      end,
+    })
+    :find()
+end
+
 -- Template based note creation
 M.new_note_with_template = function()
   local note_types = {
@@ -178,6 +220,8 @@ M.new_note_with_template = function()
       folder = "learning",
       template = "learning",
       use_telescope = true,
+      use_template_selection = true,
+      available_templates = { "learning", "lecture", "reading" },
       filename_format = function(title)
         return title:gsub("%s+", "-"):lower()
       end,
@@ -231,14 +275,23 @@ M.new_note_with_template = function()
             full_path = chosen_type.folder .. "/" .. filename
           end
 
-          if chosen_type.template then
-            vim.cmd("ObsidianNew " .. full_path)
-            -- Wait a moment for the file to be created, then apply template
-            vim.defer_fn(function()
-              vim.cmd("ObsidianTemplate " .. chosen_type.template)
-            end, 100)
+          if chosen_type.use_template_selection and chosen_type.available_templates then
+            pick_template_with_telescope(chosen_type.available_templates, function(selected_template)
+              vim.cmd("ObsidianNew " .. full_path)
+              vim.defer_fn(function()
+                vim.cmd("ObsidianTemplate " .. selected_template)
+              end, 100)
+            end)
           else
-            vim.cmd("ObsidianNew " .. full_path)
+            if chosen_type.template then
+              vim.cmd("ObsidianNew " .. full_path)
+              -- Wait a moment for the file to be created, then apply template
+              vim.defer_fn(function()
+                vim.cmd("ObsidianTemplate " .. chosen_type.template)
+              end, 100)
+            else
+              vim.cmd("ObsidianNew " .. full_path)
+            end
           end
         end
       end)
@@ -300,10 +353,12 @@ M.new_learning_note = function()
         local filename = title:gsub("%s+", "-"):lower()
         local full_path = chosen_path .. "/" .. filename
 
-        vim.cmd("ObsidianNew " .. full_path)
-        vim.defer_fn(function()
-          vim.cmd "ObsidianTemplate learning"
-        end, 100)
+        pick_template_with_telescope({ "learning", "lecture", "reading" }, function(selected_template)
+          vim.cmd("ObsidianNew " .. full_path)
+          vim.defer_fn(function()
+            vim.cmd("ObsidianTemplate " .. selected_template)
+          end, 100)
+        end)
       end
     end)
   end)
