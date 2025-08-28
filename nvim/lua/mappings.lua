@@ -77,6 +77,9 @@ map("v", "S", '"_s', { desc = "Substitute without yanking" })
 -- Timestamp mapping
 map("n", "<leader>dt", utils.time.insert_timestamp, { desc = "Insert timestamp" })
 
+-- Toggle case on first letter of current word
+map("n", "<leader>wc", "b~ea", { desc = "Toggle case on first char of current word and enter insert mode after word" })
+
 -- Close all buffers except current one
 map("n", "<leader>bo", utils.buffer.close_other_buffers, { desc = "Close all buffers except currently selected" })
 
@@ -91,124 +94,44 @@ map("n", "<leader>sw", function()
   utils.typo.swap_chars()
 end, { desc = "Swap characters with next" })
 
--- Obsidian mappings
--- Function to check if current file is in Obsidian vault
--- local function is_in_obsidian_vault()
---   local vault_path = globals.get_vault_path "main"
---   if not vault_path then
---     return false
---   end
---
---   local cwd = vim.fn.getcwd()
---
---   vault_path = vault_path:gsub("/$", "")
---   cwd = cwd:gsub("/$", "")
---
---   return cwd == vault_path or vim.startswith(cwd, vault_path .. "/")
--- end
---
--- -- Obsidian mappings - only load when in vault
--- vim.api.nvim_create_autocmd("VimEnter", {
---   pattern = "*",
---   callback = function()
---     print("VimEnter triggered")
---     if is_in_obsidian_vault() then
---       print("In vault - loading mappings")
---       local obsidian_utils = utils.obsidian
---
---       map("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<cr>", { buffer = true, desc = "Quick switch notes" })
---
---       -- Note creation and navigation
---       map(
---         "n",
---         "<leader>on",
---         obsidian_utils.new_note,
---         { buffer = true, desc = "Create new Obsidian note (choose folder)" }
---       )
---       map(
---         "n",
---         "<leader>ont",
---         obsidian_utils.new_note_with_template,
---         { buffer = true, desc = "Create new note with template" }
---       )
---       map("n", "<leader>ond", obsidian_utils.new_daily_note, { buffer = true, desc = "Create new daily note" })
---       map("n", "<leader>onp", obsidian_utils.new_project_note, { buffer = true, desc = "Create new project note" })
---       map("n", "<leader>onm", obsidian_utils.new_meeting_note, { buffer = true, desc = "Create new meeting note" })
---       map("n", "<leader>onl", obsidian_utils.new_learning_note, { buffer = true, desc = "Create new learning note" })
---       map("n", "<leader>oni", obsidian_utils.new_idea_note, { buffer = true, desc = "Create new idea note" })
---       map("n", "<leader>ono", obsidian_utils.new_other_note, { buffer = true, desc = "Create new other note" })
---
---       map("n", "<leader>os", obsidian_utils.search_notes, { buffer = true, desc = "Search Obsidian notes" })
---       map("n", "<leader>od", obsidian_utils.open_daily_note, { buffer = true, desc = "Open today's daily note" })
---       map("n", "<leader>ow", obsidian_utils.open_weekly_note, { buffer = true, desc = "Open weekly notes" })
---       map("n", "<leader>ot", "<cmd>ObsidianTags<cr>", { buffer = true, desc = "Search Obsidian tags" })
---
---       -- Note operations
---       map("n", "<leader>or", obsidian_utils.rename_note, { buffer = true, desc = "Rename current note" })
---       map("v", "<leader>oe", obsidian_utils.extract_note, { buffer = true, desc = "Extract selection to new note" })
---       map("n", "<leader>op", obsidian_utils.paste_image, { buffer = true, desc = "Paste image from clipboard" })
---
---       -- Obsidian frontmatter
---       map("n", "<leader>mf", function()
---         obsidian_utils.insert_obsidian_frontmatter()
---       end, { buffer = true, desc = "Insert Obsidian frontmatter" })
---
---       -- Folder-specific search functions
---       map("n", "<leader>osd", function()
---         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "daily")
---       end, { buffer = true, desc = "Search daily notes" })
---
---       map("n", "<leader>osp", function()
---         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "projects")
---       end, { buffer = true, desc = "Search project notes" })
---
---       map("n", "<leader>osm", function()
---         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "meetings")
---       end, { buffer = true, desc = "Search meeting notes" })
---
---       map("n", "<leader>osl", function()
---         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "learning")
---       end, { buffer = true, desc = "Search learning notes" })
---
---       map("n", "<leader>osi", function()
---         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "ideas")
---       end, { buffer = true, desc = "Search idea notes" })
---
---       map("n", "<leader>oso", function()
---         vim.cmd("Telescope find_files cwd=" .. globals.get_vault_path "main" .. "other")
---       end, { buffer = true, desc = "Search other notes" })
---
---       vim.notify("Obsidian mappings loaded for vault session", vim.log.levels.INFO)
---     else
---       print("Not in vault directory")
---     end
---   end,
--- })
---
--- -- Markdown specific obsidian mappings
--- vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
---   pattern = "*",
---   callback = function()
---     if is_in_obsidian_vault() and vim.bo.filetype == "markdown" then
---       vim.opt_local.conceallevel = 2
---
---       local obsidian_utils = utils.obsidian
---
---       map("n", "<leader>oT", "<cmd>ObsidianTOC<cr>", { buffer = true, desc = "Table of contents" })
---       map("n", "<leader>ox", "<cmd>ObsidianToggleCheckbox<cr>", { buffer = true, desc = "Toggle checkbox" })
---
---       map("n", "<leader>ol", obsidian_utils.insert_link, { buffer = true, desc = "Insert new Obsidian link" })
---       map("n", "<leader>of", obsidian_utils.follow_link, { buffer = true, desc = "Follow Obsidian link" })
---       map("n", "<leader>ob", obsidian_utils.back_link, { buffer = true, desc = "Show backlinks" })
---
---       map("n", "<leader>or", obsidian_utils.rename_note, { buffer = true, desc = "Rename current note" })
---       map("v", "<leader>oe", obsidian_utils.extract_note, { buffer = true, desc = "Extract selection to new note" })
---       map("n", "<leader>op", obsidian_utils.paste_image, { buffer = true, desc = "Paste image from clipboard" })
---       map("n", "<leader>oo", obsidian_utils.open_in_app, { buffer = true, desc = "Open current note in Obsidian app" })
---
---       map("n", "<leader>mf", function()
---         obsidian_utils.insert_obsidian_frontmatter()
---       end, { buffer = true, desc = "Insert Obsidian frontmatter" })
---     end
---   end,
--- })
+-- Markdown bold mapping
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    map("n", "<leader>bb", function()
+      local word = vim.fn.expand "<cword>"
+      if word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+      end
+
+      vim.cmd("normal! ciw**" .. word .. "**")
+    end, { buffer = true, desc = "Make word bold (**word**)" })
+
+    map("n", "<leader>bc", function()
+      local word = vim.fn.expand "<cword>"
+      if word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+      end
+
+      vim.cmd("normal! ciw**" .. word .. ":**")
+    end, { buffer = true, desc = "Make word bold with colon (**word:**)" })
+
+    map("v", "<leader>bb", function()
+      vim.cmd 'normal! "zy'
+      local selected = vim.fn.getreg "z"
+
+      vim.cmd("normal! gvc**" .. selected .. "**")
+    end, { buffer = true, desc = "Make selection bold (**text**)" })
+
+    map("v", "<leader>bc", function()
+      -- Get the visually selected text
+      vim.cmd 'normal! "zy'
+      local selected = vim.fn.getreg "z"
+
+      -- Replace selection with **selection:**
+      vim.cmd("normal! gvc**" .. selected .. ":**")
+    end, { buffer = true, desc = "Make selection bold with colon (**text:**)" })
+  end,
+})
