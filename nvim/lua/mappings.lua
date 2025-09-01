@@ -94,10 +94,11 @@ map("n", "<leader>sw", function()
   utils.typo.swap_chars()
 end, { desc = "Swap characters with next" })
 
--- Markdown bold mapping
+-- Markdown mappings
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
+    --- Bold mappings
     map("n", "<leader>bb", function()
       local word = vim.fn.expand "<cword>"
       if word == "" then
@@ -126,12 +127,28 @@ vim.api.nvim_create_autocmd("FileType", {
     end, { buffer = true, desc = "Make selection bold (**text**)" })
 
     map("v", "<leader>bc", function()
-      -- Get the visually selected text
       vim.cmd 'normal! "zy'
       local selected = vim.fn.getreg "z"
 
-      -- Replace selection with **selection:**
       vim.cmd("normal! gvc**" .. selected .. ":**")
     end, { buffer = true, desc = "Make selection bold with colon (**text:**)" })
+
+    --- Italic mappings
+    map("n", "<leader>ii", function()
+      local word = vim.fn.expand "<cword>"
+      if word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+      end
+
+      vim.cmd("normal! ciw*" .. word .. "*")
+    end, { buffer = true, desc = "Make word italic (*word*)" })
+
+    map("v", "<leader>ii", function()
+      vim.cmd 'normal! "zy'
+      local selected = vim.fn.getreg "z"
+
+      vim.cmd("normal! gvc*" .. selected .. "*")
+    end, { buffer = true, desc = "Make selection italic (*text*)" })
   end,
 })
