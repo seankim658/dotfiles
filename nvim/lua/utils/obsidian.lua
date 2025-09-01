@@ -3,9 +3,14 @@ local globals = require "globals"
 
 local function ensure_vault_root()
   local vault_path = globals.get_vault_path "main"
+  if vault_path == nil then
+    return false
+  end
   local current_dir = vim.fn.getcwd()
-  if current_dir ~= vault_path then
-    vim.cmd("cd " .. vault_path)
+
+  local vault_path_no_slash = vault_path:gsub("/$", "")
+  if not globals.is_file_in_vault(current_dir, "main") then
+    vim.cmd("cd " .. vault_path_no_slash)
   end
 end
 

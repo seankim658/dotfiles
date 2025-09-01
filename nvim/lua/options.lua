@@ -10,17 +10,8 @@ option.colorcolumn = "150"
 
 -- Obsidian autocmds - loaded early so VimEnter works
 local function is_in_obsidian_vault()
-  local vault_path = globals.get_vault_path "main"
-  if not vault_path then
-    return false
-  end
-
   local cwd = vim.fn.getcwd()
-
-  vault_path = vault_path:gsub("/$", "")
-  cwd = cwd:gsub("/$", "")
-
-  return cwd == vault_path or vim.startswith(cwd, vault_path .. "/")
+  return globals.is_file_in_vault(cwd, "main")
 end
 
 -- Load obsidian mappings immediately if starting in vault directory

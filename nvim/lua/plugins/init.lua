@@ -107,10 +107,7 @@ return {
       if vault_path then
         local cwd = vim.fn.getcwd()
 
-        vault_path = vault_path:gsub("/$", "")
-        cwd = cwd:gsub("/$", "")
-
-        local in_vault_dir = vim.startswith(cwd, vault_path)
+        local in_vault_dir = globals.is_file_in_vault(cwd, "main")
 
         local events = {}
 
