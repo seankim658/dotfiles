@@ -226,6 +226,14 @@ return {
         return title
       end,
 
+      wiki_link_func = function(opts)
+        if opts.anchor and opts.anchor.header then
+          return string.format("[[%s#%s]]", opts.path or opts.label, opts.anchor.header)
+        else
+          return require("obsidian.util").wiki_link_id_prefix(opts)
+        end
+      end,
+
       note_path_func = function(spec)
         local path = spec.dir / tostring(spec.title)
         return path:with_suffix ".md"
