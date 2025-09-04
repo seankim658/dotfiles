@@ -150,5 +150,41 @@ vim.api.nvim_create_autocmd("FileType", {
 
       vim.cmd("normal! gvc*" .. selected .. "*")
     end, { buffer = true, desc = "Make selection italic (*text*)" })
+
+    --- Italic and code block mappings
+    map("n", "<leader>ic", function()
+      local word = vim.fn.expand "<cword>"
+      if word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+      end
+
+      vim.cmd("normal! ciw_`" .. word .. "`_")
+    end, { buffer = true, desc = "Make word italic code (_`word`_)" })
+
+    map("v", "<leader>ic", function()
+      vim.cmd 'normal! "zy'
+      local selected = vim.fn.getreg "z"
+
+      vim.cmd("normal! gvc_`" .. selected .. "`_")
+    end, { buffer = true, desc = "Make selection italic code (_`text`_)" })
+
+    --- Latex mappings
+    map("n", "<leader>lx", function()
+      local word = vim.fn.expand "<cword>"
+      if word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+      end
+
+      vim.cmd("normal! ciw$" .. word .. "$")
+    end, { buffer = true, desc = "Add obsidian latex delimiters ($word$)" })
+
+    map("v", "<leader>lx", function()
+      vim.cmd 'normal! "zy'
+      local selected = vim.fn.getreg "z"
+
+      vim.cmd("normal! gvc$" .. selected .. "$")
+    end, { buffer = true, desc = "Add obsidian latex delimiters to selection ($text$)" })
   end,
 })
