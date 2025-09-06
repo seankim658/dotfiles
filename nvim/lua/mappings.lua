@@ -4,6 +4,8 @@ require "nvchad.mappings"
 -- Import utils
 local utils = require "utils"
 
+vim.keymap.del("n", "<leader>b")
+
 -- My mappings
 
 local map = vim.keymap.set
@@ -170,7 +172,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end, { buffer = true, desc = "Make selection italic code (_`text`_)" })
 
     --- Latex mappings
-    map("n", "<leader>lx", function()
+    map("n", "<leader>l", function()
       local word = vim.fn.expand "<cword>"
       if word == "" then
         vim.notify("No word under cursor", vim.log.levels.WARN)
@@ -180,11 +182,29 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.cmd("normal! ciw$" .. word .. "$")
     end, { buffer = true, desc = "Add obsidian latex delimiters ($word$)" })
 
-    map("v", "<leader>lx", function()
+    map("v", "<leader>l", function()
       vim.cmd 'normal! "zy'
       local selected = vim.fn.getreg "z"
 
       vim.cmd("normal! gvc$" .. selected .. "$")
     end, { buffer = true, desc = "Add obsidian latex delimiters to selection ($text$)" })
+
+    --- Carrot mappings
+    map("n", "<leader>cc", function()
+      local word = vim.fn.expand "<cword>"
+      if word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+      end
+
+      vim.cmd("normal! ciw^" .. word)
+    end, { buffer = true, desc = "Add carrot before word (^word)" })
+
+    map("v", "<leader>cc", function()
+      vim.cmd 'normal! "zy'
+      local selected = vim.fn.getreg "z"
+
+      vim.cmd("normal! gvc^" .. selected)
+    end, { buffer = true, desc = "Add carrot before selection (^text)" })
   end,
 })

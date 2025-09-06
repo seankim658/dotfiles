@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
           map("n", "<leader>os", obsidian_utils.search_notes, { desc = "Search Obsidian notes" })
           map("n", "<leader>od", obsidian_utils.open_daily_note, { desc = "Open today's daily note" })
 
-          map("n", "<leader>on", obsidian_utils.new_note, { desc = "Create new Obsidian note (choose folder)" })
+          -- map("n", "<leader>on", obsidian_utils.new_note, { desc = "Create new Obsidian note (choose folder)" })
           map("n", "<leader>ont", obsidian_utils.new_note_with_template, { desc = "Create new note with template" })
           map("n", "<leader>ond", obsidian_utils.new_daily_note, { desc = "Create new daily note" })
           map("n", "<leader>onp", obsidian_utils.new_project_note, { desc = "Create new project note" })
