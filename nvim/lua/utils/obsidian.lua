@@ -190,6 +190,9 @@ local function pick_template_with_telescope(templates, callback)
     :find()
 end
 
+-- Second level templates
+local learning_templates = { "learning", "lecture", "reading", "hci-522", "algo-401" }
+
 -- Template based note creation
 M.new_note_with_template = function()
   local note_types = {
@@ -226,7 +229,7 @@ M.new_note_with_template = function()
       template = "learning",
       use_telescope = true,
       use_template_selection = true,
-      available_templates = { "learning", "lecture", "reading" },
+      available_templates = learning_templates,
       filename_format = function(title)
         return title:gsub("%s+", "-"):lower()
       end,
@@ -358,7 +361,7 @@ M.new_learning_note = function()
         local filename = title:gsub("%s+", "-"):lower()
         local full_path = chosen_path .. "/" .. filename
 
-        pick_template_with_telescope({ "learning", "lecture", "reading" }, function(selected_template)
+        pick_template_with_telescope(learning_templates, function(selected_template)
           vim.cmd("ObsidianNew " .. full_path)
           vim.defer_fn(function()
             vim.cmd("ObsidianTemplate " .. selected_template)
