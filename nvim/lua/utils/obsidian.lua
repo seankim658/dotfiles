@@ -192,6 +192,7 @@ end
 
 -- Second level templates
 local learning_templates = { "learning", "lecture", "reading", "hci-522", "algo-401" }
+local meeting_templates = { "meeting", "checa-meeting" }
 
 -- Template based note creation
 M.new_note_with_template = function()
@@ -219,6 +220,8 @@ M.new_note_with_template = function()
       folder = "meetings",
       template = "meeting",
       use_telescope = true,
+      use_template_selection = true,
+      available_templates = meeting_templates,
       filename_format = function(title)
         return os.date "%Y-%m-%d" .. "-" .. title:gsub("%s+", "-"):lower()
       end,
@@ -344,10 +347,12 @@ M.new_meeting_note = function()
         local filename = os.date "%Y-%m-%d" .. "-" .. title:gsub("%s+", "-"):lower()
         local full_path = chosen_path .. "/" .. filename
 
-        vim.cmd("ObsidianNew " .. full_path)
-        vim.defer_fn(function()
-          vim.cmd "ObsidianTemplate meeting"
-        end, 100)
+        pick_template_with_telescope(meeting_templates, function(selected_template)
+          vim.cmd("ObsidianNew " .. full_path)
+          vim.defer_fn(function()
+            vim.cmd("ObsidianTemplate " .. selected_template)
+          end, 100)
+        end)
       end
     end)
   end)
