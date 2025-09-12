@@ -192,7 +192,7 @@ end
 
 -- Second level templates
 local learning_templates = { "learning", "lecture", "reading", "hci-522", "algo-401" }
-local meeting_templates = { "meeting", "checa-meeting" }
+local meeting_templates = { "meeting", "checa-meeting", "digital-privacy-meeting" }
 
 -- Template based note creation
 M.new_note_with_template = function()
