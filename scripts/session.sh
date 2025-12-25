@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SEARCH_PATHS=(~/projects/hive ~/projects/personal ~/projects/misc ~/projects ~/scripts)
+SEARCH_PATHS=(~/projects/hive ~/projects/personal ~/projects/misc ~/projects/elicit ~/projects ~/scripts)
 
 # Determines whether to open separate `frontend/` and `backend/` windows
 is_split_project=false

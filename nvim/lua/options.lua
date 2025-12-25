@@ -6,9 +6,16 @@ local option = vim.o
 option.relativenumber = true
 option.colorcolumn = "150"
 
+vim.filetype.add {
+  extension = {
+    qasm = "qasm",
+    qasm3 = "qasm3",
+  },
+}
+
 -- vim.diagnostic.config({virtual_text = false}) -- Disable diagnostic virtual text.
 
--- Obsidian autocmds - loaded early so VimEnter works
+-- # Obsidian autocmds (loaded early so VimEnter works)
 local function is_in_obsidian_vault()
   local cwd = vim.fn.getcwd()
   return globals.is_file_in_vault(cwd, "main")

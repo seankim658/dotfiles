@@ -153,6 +153,9 @@ export PATH="$PATH:/opt/nvim-linux64/bin"         # Add neovim binaries
 if [ -f "$HOME/.deno/bin" ]; then
   add_to_path "$HOME/.deno/bin"
 fi
+if [ -d "$HOME/bin" ]; then
+  add_to_path "$HOME/bin"
+fi
 
 # --------------------------
 # Environment Variables
