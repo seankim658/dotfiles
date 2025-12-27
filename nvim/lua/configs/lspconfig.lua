@@ -4,7 +4,7 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 -- local globals = require "globals"
 
-local servers = { "html", "cssls", "bashls", "clangd", "rust_analyzer", "gopls" }
+local servers = { "html", "cssls", "bashls", "clangd", "gopls" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -22,6 +22,22 @@ end
 --   on_init = nvlsp.on_init,
 --   capabilities = nvlsp.capabilities,
 -- }
+
+lspconfig.rust_analyzer.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = {
+        features = "all",
+      },
+      procMacro = {
+        enable = true,
+      },
+    },
+  },
+}
 
 -- Don't load marksman in my obsidian vault
 lspconfig.marksman.setup {
