@@ -4,7 +4,7 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 -- local globals = require "globals"
 
-local servers = { "html", "cssls", "bashls", "clangd", "gopls" }
+local servers = { "html", "bashls", "clangd", "gopls", "astro", "tailwindcss" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -15,6 +15,21 @@ for _, lsp in ipairs(servers) do
     capabilities = nvlsp.capabilities,
   }
 end
+
+-- CSS with Tailwind custom data
+lspconfig.cssls.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    css = {
+      validate = true,
+      lint = {
+        unknownAtRules = "ignore",
+      },
+    },
+  },
+}
 
 -- Rust analyzer with all features on
 lspconfig.rust_analyzer.setup {
