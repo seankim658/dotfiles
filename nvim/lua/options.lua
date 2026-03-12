@@ -8,6 +8,7 @@ option.colorcolumn = "150"
 
 vim.filetype.add {
   extension = {
+    jinja = "jinja",
     qasm = "qasm",
     qasm3 = "qasm3",
   },

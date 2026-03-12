@@ -16,13 +16,7 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- configuring single server, example: typescript
--- lspconfig.ts_ls.setup {
---   on_attach = nvlsp.on_attach,
---   on_init = nvlsp.on_init,
---   capabilities = nvlsp.capabilities,
--- }
-
+-- Rust analyzer with all features on
 lspconfig.rust_analyzer.setup {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
@@ -37,6 +31,14 @@ lspconfig.rust_analyzer.setup {
       },
     },
   },
+}
+
+-- Jinja lsp
+lspconfig.jinja_lsp.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = { "jinja", "html" },
 }
 
 -- Don't load marksman in my obsidian vault
