@@ -4,7 +4,7 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 -- local globals = require "globals"
 
-local servers = { "html", "bashls", "clangd", "gopls", "astro", "tailwindcss" }
+local servers = { "html", "bashls", "clangd", "gopls", "astro" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -29,6 +29,14 @@ lspconfig.cssls.setup {
       },
     },
   },
+}
+
+-- Tailwind lsp
+lspconfig.tailwindcss.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact", "astro" },
 }
 
 -- Rust analyzer with all features on
@@ -78,14 +86,7 @@ lspconfig.marksman.setup {
       return nil
     end
 
-    -- Otherwise use the default root_dir logic
-    return require("lspconfig.util").find_git_ancestor(fname) or vim.fn.getcwd()
-  end,
-  autostart = function(bufnr)
-    local globals = require "globals"
-    local fname = vim.api.nvim_buf_get_name(bufnr)
-
-    return not globals.is_file_in_vault(fname, "main")
+    return require("lspconfig.util").find_git_ancestor(fname) or require("lspconfig.util").path.dirname(fname)
   end,
 }
 
