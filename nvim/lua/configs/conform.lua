@@ -12,6 +12,15 @@ local options = {
     yaml = { "prettier" },
     markdown = { "prettier" },
     go = { "gopls" },
+    astro = { "prettier_astro" },
+  },
+
+  formatters = {
+    prettier_astro = {
+      command = "prettier",
+      args = { "--plugin", "prettier-plugin-astro", "--stdin-filepath", "$FILENAME" },
+      stdin = true,
+    },
   },
 
   -- format_on_save = {
