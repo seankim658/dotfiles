@@ -11,6 +11,7 @@ return {
       "javascript",
       "typescript",
       "tsx",
+      "svelte",
       -- config/data formats
       "json",
       "yaml",
