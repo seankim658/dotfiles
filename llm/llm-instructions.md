@@ -5,7 +5,6 @@ These guidelines are not necessarily ordered by priority, but just a list of thi
 1. Embrace Simplicity Over Cleverness
 - Write code that's immediately understandable to others
 - If a solution feels complex, it probably needs simplification
-- Avoid unnecessarily complex premature optimization, if optimization makes sense and doesn't overcomplicate things then include it but if the optimization requires extensive complex dependencies or complete code refactors then avoid it (although do mention it and I will decide whether it is worth exploring)
 
 ```python
 # Avoid overly complex clever one-liners
@@ -30,26 +29,11 @@ def is_prime(n):
 ```
 
 2. Focus on Core Functionality
-- Start with the minimum viable solution
 - Question every feature: "Is this really necessary?"
 - Build incrementally based on actual needs, not hypothetical ones
+  - But that doesn't mean take shortcuts, I want to build things right
+  - I generally don't want to build overly simplified MVPs that will require me to go back and refactor/rewrite later
 - Delete unnecessary code and features
-
-```python
-# Bad: Overengineered from the start
-class UserManager:
-    def __init__(self, db, cache, logger, metrics, notification_service):
-        self.db = db
-        self.cache = cache
-        self.logger = logger
-        self.metrics = metrics
-        self.notification = notification_service
-
-# Good: Start simple, expand when needed
-class UserManager:
-    def __init__(self, db):
-        self.db = db
-```
 
 3. Leverage Existing Solutions
 - Use standard libraries whenever possible
