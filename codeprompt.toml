@@ -1,18 +1,67 @@
+# Example configuration for codeprompt.
+#
+# Every value is optional; anything you omit falls back to the default shown here.
+#
+# The file has two sections:
+#   [tui]     read only by the TUI wrapper
+#   [global]  read by BOTH the TUI and the CLI it runs
+
+[tui]
+# The command the TUI builds and runs or submits.
 command = "codeprompt"
+
+# Directory scanned for Handlebars (.hbs) templates. A leading ~ is expanded.
+# Leave unset to disable the templates panel.
 template_dir = "~/projects/personal/codeprompts/cli/src/templates/"
 
-[defaults]
-# Give precedence to exclude patterns over include patterns when they conflict
-exclude_priority = false
-# Exclude files/folders from the source tree based on exclude patterns
-exclude_from_tree = false
-# Whether to respect the .gitignore file
-diff_staged = false
-diff_unstaged = false
-gitignore = true
-no_tokens = false
-no_line_numbers = false
-no_codeblock = false
-relative_paths = false
-no_clipboard = false
-no_spinner = false
+# Line-number gutter for the list panels, to help count rows for <count>j / <count>k.
+# Both default off; both on gives the vim-style hybrid gutter.
+line_numbers = true           # Absolute line numbers
+relative_line_numbers = true  # Distances from the cursor (0 on the cursor row)
+
+# Character sequence to leave the fuzzy finder's insert mode, in addition to Esc (like
+# mapping `jj` to <Esc> in Vim). 1-4 characters, no whitespace; applies only to
+# the fuzzy finder's query. Leave unset to make Esc the only way out.
+escape_sequence = "jj"
+
+[tui.defaults]
+# Starting state of each toggle in the TUI's Options panel.
+exclude_priority = false   # On a conflict, let exclude patterns win over include
+exclude_from_tree = false  # Drop excluded files from the source tree too
+literal_brackets = false   # Treat [ and ] in patterns as literal characters
+diff_staged = false        # Capture the staged git diff
+diff_unstaged = false      # Capture the unstaged git diff
+gitignore = true           # Respect .gitignore while walking
+no_tokens = false          # Skip the token-count estimate
+no_line_numbers = false    # Omit line numbers in code blocks
+no_codeblock = false       # Don't wrap file contents in Markdown code fences
+absolute_paths = false     # Use absolute paths instead of relative ones
+no_clipboard = false       # Don't copy the result to the clipboard
+no_spinner = false         # Don't render the progress spinner
+
+[global]
+# Directory names to skip while walking, matched on the final path component
+# (plain names, not globs). Honored by both the TUI preview and the CLI.
+#
+# Semantics are REPLACE, not merge:
+#   - omit this key entirely  -> the defaults below are used
+#   - set it                  -> your list fully replaces the defaults
+#   - set it to []            -> nothing is ignored
+#
+# Pure replace, no special cases: if you drop ".git", the walk descends into it.
+# (Binary objects are still filtered out automatically, but plain-text git files
+# like HEAD and config would then be included.)
+ignore = [
+  # Git
+  ".git", 
+  # Python
+  "venv", 
+  "__pycache__",
+  # Node
+  "node_modules",
+  "package-lock.json",
+  "pnpm-lock.yaml",
+]
+
+[profiles.rust]
+exclude = ["Cargo.lock"]
