@@ -1,11 +1,8 @@
 # My Configs
 
-These configs are used across MacOS and Linux.
-
 - [Bash](#bash)
 - [Git](#git)
 - [MacOS](#macos)
-  - [Aerospace](#aerospace)
 - [Nvim](#nvim)
 - [Scripts](#scripts)
 - [Tmux](#tmux)
@@ -14,7 +11,7 @@ These configs are used across MacOS and Linux.
 
 ## Bash
 
-Ubuntu WSL:
+Lenovo Ubuntu WSL ():
 
 ```
 GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)
@@ -22,9 +19,11 @@ Copyright (C) 2020 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 ```
 
-MacOS:
+MacOS (Monday, 14-Sep-26 01:25:14PM EST):
 
 ```
+/opt/homebrew/bin/bash
+
 GNU bash, version 5.2.37(1)-release (aarch64-apple-darwin24.0.0)
 Copyright (C) 2022 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -32,13 +31,13 @@ License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
 ## Git
 
-Ubuntu WSL:
+Lenovo Ubuntu WSL ():
 
 ```
 git version 2.34.1
 ```
 
-MacOS:
+MacOS (Monday, 14-Sep-26 01:25:48PM EST):
 
 ```
 git version 2.39.5 (Apple Git-154)
@@ -46,7 +45,7 @@ git version 2.39.5 (Apple Git-154)
 
 ## MacOS
 
-#### Aerospace
+Aerospace (Monday, 14-Sep-26 01:38:57PM EST):
 
 ```
 aerospace CLI client version: 0.16.0-Beta d172dfd8a92f2d339f3d46a12a297e43e80768ca
@@ -55,7 +54,7 @@ AeroSpace.app server version: 0.16.0-Beta d172dfd8a92f2d339f3d46a12a297e43e80768
 
 ## Nvim
 
-Ubuntu WSL:
+Lenovo Ubuntu WSL ():
 
 ```
 NVIM v0.9.4
@@ -63,33 +62,31 @@ Build type: Release
 LuaJIT 2.1.1692716794
 ```
 
-MacOS:
+MacOS (Monday, 14-Sep-26 01:40:52PM EST):
 
 ```
-NVIM v0.10.2
+NVIM v0.10.3
 Build type: Release
-LuaJIT 2.1.1731601260
+LuaJIT 2.1.1734355927
+Run "nvim -V1 -v" for more info
 ```
-
-I prefer `JetBrainsMonoNL` for my nerdfont (in the `fonts/` directory).
 
 ## Scripts
 
 | Name          | Functionality                                                                                                                                                                                                              |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `session.sh`  | Uses `fzf` to find a project and start a tmux session. If the session already exists, will attach to it. Uses the directory name as the session name and creates two windows, `code` and `shell`.                          |
-| `obsidian.sh` | Creates a tmux session in my obsidian vault.                                                                                                                                                                               |
 | `setup.sh`    | My initial machine setup for dotfile symlinks, etc. If a file matches but is no a symlink, backs it up. If a symlink already exists, just skips. Also re-sources some config files (such as `.bashrc`, `.tmux.conf`, etc.) |
 
 ## Tmux
 
-Ubuntu WSL:
+Lenovo Ubuntu WSL ():
 
 ```
 tmux 3.2a
 ```
 
-MacOS:
+MacOS (Monday, 14-Sep-26 01:42:10PM EST):
 
 ```
 tmux 3.5a

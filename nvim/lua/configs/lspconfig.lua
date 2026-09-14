@@ -1,120 +1,89 @@
--- load defaults i.e lua_lsp
+-- NVChad LSP defaults (lua_ls, keymaps, diagnostic UI, etc.)
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
--- local globals = require "globals"
-
-local servers = { "html", "bashls", "clangd", "gopls", "astro", "svelte" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
--- lsps with default config
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-  }
-end
-
--- CSS with Tailwind custom data
-lspconfig.cssls.setup {
+-- Base config shared by all LSPs
+local base = {
   on_attach = nvlsp.on_attach,
   on_init = nvlsp.on_init,
   capabilities = nvlsp.capabilities,
+}
+
+-- Set up `server`, merging any per-server overrides onto `base`
+local function setup(server, opts)
+  lspconfig[server].setup(vim.tbl_deep_extend("force", base, opts or {}))
+end
+
+-- Servers that only need the defaults
+for _, server in ipairs { "html", "bashls", "clangd", "gopls", "astro", "svelte", "marksman" } do
+  setup(server)
+end
+
+--- Web ---
+
+-- Ignore Tailwind's custom at-rules instead of warning
+setup("cssls", {
   settings = {
     css = {
       validate = true,
-      lint = {
-        unknownAtRules = "ignore",
-      },
+      lint = { unknownAtRules = "ignore" },
     },
   },
-}
+})
 
--- Tailwind lsp
-lspconfig.tailwindcss.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
+-- Extend Tailwind to extra filetypes
+setup("tailwindcss", {
   filetypes = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact", "astro" },
-}
+})
 
--- Rust analyzer with all features on
-lspconfig.rust_analyzer.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = {
-        features = "all",
-      },
-      procMacro = {
-        enable = true,
-      },
-    },
+-- Turn off tsserver's soft suggestion diagnostics, those are deferred to eslint_d
+setup("ts_ls", {
+  init_options = {
+    preferences = { disableSuggestions = true },
   },
-}
+})
 
--- Jinja lsp
-lspconfig.jinja_lsp.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-  filetypes = { "jinja", "html" },
-}
+--- Python ---
 
--- Don't load marksman in my obsidian vault
-lspconfig.marksman.setup {
-  on_attach = function(client, bufnr)
-    local globals = require "globals"
-    local current_file = vim.api.nvim_buf_get_name(bufnr)
-
-    if globals.is_file_in_vault(current_file, "main") then
-      vim.lsp.buf_detach_client(bufnr, client.id)
-      return
-    end
-
-    nvlsp.on_attach(client, bufnr)
-  end,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-  root_dir = function(fname)
-    local globals = require "globals"
-
-    if globals.is_file_in_vault(fname, "main") then
-      return nil
-    end
-
-    return require("lspconfig.util").find_git_ancestor(fname) or require("lspconfig.util").path.dirname(fname)
-  end,
-}
-
--- Python pyright virtualenv support
+-- Prefer the active virtualenv's interpreter, fall back to system python
 local function get_python_path()
   if vim.env.VIRTUAL_ENV then
     return vim.env.VIRTUAL_ENV .. "/bin/python"
   end
-  return vim.fn.exepath "python" or "python"
+  local python = vim.fn.exepath "python"
+  return python ~= "" and python or "python"
 end
 
-lspconfig.pyright.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
+-- pyright: type checking + IDE features
+setup("pyright", {
   before_init = function(_, config)
     config.settings.python.pythonPath = get_python_path()
   end,
-}
+})
 
--- TypeScript
-lspconfig.ts_ls.setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-  init_options = {
-    preferences = {
-      disableSuggestions = true,
+-- ruff: linting only
+setup("ruff", {
+  on_attach = function(client, bufnr)
+    client.server_capabilities.hoverProvider = false
+    nvlsp.on_attach(client, bufnr)
+  end,
+})
+
+--- Systems / Templates / Markup ---
+
+-- Rust
+setup("rust_analyzer", {
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = { features = "all" },
+      procMacro = { enable = true },
     },
   },
-}
+})
+
+-- Jinja
+setup("jinja_lsp", {
+  filetypes = { "jinja", "html" },
+})

@@ -6,9 +6,6 @@ return {
     local conf = require "nvchad.configs.cmp"
 
     conf.sources = cmp.config.sources {
-      { name = "obsidian" },
-      { name = "obsidian_new" },
-      { name = "obsidian_tags" },
       { name = "nvim_lsp" },
       { name = "luasnip" },
       { name = "buffer" },
@@ -24,9 +21,6 @@ return {
           buffer = "[Buffer]",
           nvim_lua = "[Lua]",
           path = "[Path]",
-          obsidian = "[Obsidian]",
-          obsidian_new = "[Obsidian New]",
-          obsidian_tags = "[Obsidian Tags]",
         })[entry.source.name]
         return vim_item
       end,

@@ -180,14 +180,14 @@ vim.api.nvim_create_autocmd("FileType", {
       end
 
       vim.cmd("normal! ciw$" .. word .. "$")
-    end, { buffer = true, desc = "Add obsidian latex delimiters ($word$)" })
+    end, { buffer = true, desc = "Add latex delimiters ($word$)" })
 
     map("v", "<leader>l", function()
       vim.cmd 'normal! "zy'
       local selected = vim.fn.getreg "z"
 
       vim.cmd("normal! gvc$" .. selected .. "$")
-    end, { buffer = true, desc = "Add obsidian latex delimiters to selection ($text$)" })
+    end, { buffer = true, desc = "Add latex delimiters to selection ($text$)" })
 
     --- Carrot mappings
     map("n", "<leader>cc", function()
