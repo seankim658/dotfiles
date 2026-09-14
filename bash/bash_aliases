@@ -1,5 +1,4 @@
 alias ovi='sh ~/scripts/session.sh'
-alias ob='sh ~/scripts/obsidian.sh'
 alias tmls='tmux ls'
 alias tmla='tmux a'
 alias tmks='tmux kill-server'

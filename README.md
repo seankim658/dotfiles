@@ -1,15 +1,21 @@
 # My Configs
 
-- [Bash](#bash)
-- [Git](#git)
-- [MacOS](#macos)
-- [Nvim](#nvim)
+- [Version](#versions)
+  - [Bash](#bash)
+  - [Git](#git)
+  - [MacOS Only](#macos-only)
+  - [Nvim](#nvim)
+  - [Tmux](#tmux)
 - [Scripts](#scripts)
-- [Tmux](#tmux)
+- [Setup](#setup)
+  - [Prerequisites](#prerequisites)
+  - [Install](#install)
 
 ---
 
-## Bash
+## Versions
+
+### Bash
 
 Lenovo Ubuntu WSL ():
 
@@ -29,7 +35,7 @@ Copyright (C) 2022 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 ```
 
-## Git
+### Git
 
 Lenovo Ubuntu WSL ():
 
@@ -43,7 +49,7 @@ MacOS (Monday, 14-Sep-26 01:25:48PM EST):
 git version 2.39.5 (Apple Git-154)
 ```
 
-## MacOS
+### MacOS Only
 
 Aerospace (Monday, 14-Sep-26 01:38:57PM EST):
 
@@ -52,7 +58,7 @@ aerospace CLI client version: 0.16.0-Beta d172dfd8a92f2d339f3d46a12a297e43e80768
 AeroSpace.app server version: 0.16.0-Beta d172dfd8a92f2d339f3d46a12a297e43e80768ca
 ```
 
-## Nvim
+### Nvim
 
 Lenovo Ubuntu WSL ():
 
@@ -71,14 +77,7 @@ LuaJIT 2.1.1734355927
 Run "nvim -V1 -v" for more info
 ```
 
-## Scripts
-
-| Name          | Functionality                                                                                                                                                                                                              |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `session.sh`  | Uses `fzf` to find a project and start a tmux session. If the session already exists, will attach to it. Uses the directory name as the session name and creates two windows, `code` and `shell`.                          |
-| `setup.sh`    | My initial machine setup for dotfile symlinks, etc. If a file matches but is no a symlink, backs it up. If a symlink already exists, just skips. Also re-sources some config files (such as `.bashrc`, `.tmux.conf`, etc.) |
-
-## Tmux
+### Tmux
 
 Lenovo Ubuntu WSL ():
 
@@ -91,3 +90,56 @@ MacOS (Monday, 14-Sep-26 01:42:10PM EST):
 ```
 tmux 3.5a
 ```
+
+## Scripts
+
+| Name         | Functionality                                                                                                                                                                                                              |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `session.sh` | Uses `fzf` to find a project and start a tmux session. If the session already exists, will attach to it. Uses the directory name as the session name and creates two windows, `code` and `shell`.                          |
+| `setup.sh`   | My initial machine setup for dotfile symlinks, etc. If a file matches but is no a symlink, backs it up. If a symlink already exists, just skips. Also re-sources some config files (such as `.bashrc`, `.tmux.conf`, etc.) |
+
+## Setup
+
+Clone this repo:
+
+```bash
+git clone git@github.com:seankim658/dotfiles.git ~/projects/personal/dotfiles
+```
+
+### Prerequisites
+
+**Core**:
+
+- `git`
+- `tmux`
+- `neovim` >= 0.10
+  - A nerd font
+  - `ripgrep` (`Telescope` dependency)
+  - `fd` (`Telescope` dependency)
+- _Linux only:_ `xclip` (`tmux` clipboard integration)
+
+**Language toolchains**:
+
+- `rustup`
+  - Then `rustup component add rust-analyzer`
+- `Node.js` (via `nvm`)
+- `prettier-plugin-astro` (`npm i -g prettier-plugin-astro`)
+- Python 3
+- Deno (`peek.nvim` dependency)
+
+**MacOS**:
+
+- Homebrew
+  - Then `brew install bash` (`tmux.conf` sets the default shell to `/opt/homebrew/bin/bash`)
+- `Aerospace`
+- `Ghostty`
+
+### Install
+
+```bash
+~/projects/personal/dotfiles/scripts/setup.sh
+```
+
+This symlinks everything into place and re-sources `.bashrc` / `.tmux.conf`. On first launch, `lazy.nvim` bootstraps 
+itself, installs all plugins pinned in `lazy-lock.json`, and `mason-tool-installer` installs the LSPs/formatters/linters 
+listed in `nvim/lua/configs/mason.lua`.

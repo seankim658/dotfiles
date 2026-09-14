@@ -149,8 +149,10 @@ else
 fi
 
 # Add custom paths
-export PATH="$PATH:/opt/nvim-linux64/bin"         # Add neovim binaries
-if [ -f "$HOME/.deno/bin" ]; then
+if [ -d "/opt/nvim-linux64/bin" ]; then
+  add_to_path "/opt/nvim-linux64/bin"
+fi
+if [ -d "$HOME/.deno/bin" ]; then
   add_to_path "$HOME/.deno/bin"
 fi
 if [ -d "$HOME/bin" ]; then
@@ -165,9 +167,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm completion
 
 # Cargo: Rust package manager and build system
-. "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 # --------------------------
 # Custom Completions
 # --------------------------
-source ~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash
+[ -f ~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash ] \
+  && source ~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash

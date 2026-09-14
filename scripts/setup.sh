@@ -1,30 +1,25 @@
 #!/bin/bash
 
+set -euo pipefail
+
 ## Sets up the symlinks and re-sources source files
 ##
 ## Symlinks (in home directory)
-## 1) .bashrc -> ~/projects/personal/dotfiles/bash/bashrc
-## 2) .bash_profile -> ~/projects/personal/dotfiles/bash/bash_profile
-## 3) .bash_aliases -> ~/projects/personal/dotfiles/bash/bash_aliases
-## 4) .tmux_conf -> ~/projects/personal/dotfiles/tmux.conf
-## 5) scripts -> ~/projects/personal/dotfiles/scripts/
-## 6) .gitconfig -> ~/projects/personal/dotfiles/gitconfig
-## 7) .config/nvim -> ~/projects/personal/dotfiles/nvim/
-## 8) cptemps -> ~/projects/personal/codeprompts/src/templates/
-## 9) .codeprompts.toml -> ~/projects/personal/dotfiles/codeprompts.toml
-## 
+## 1) .bashrc          -> ~/projects/personal/dotfiles/bash/bashrc
+## 2) .bash_profile    -> ~/projects/personal/dotfiles/bash/bash_profile
+## 3) .bash_aliases    -> ~/projects/personal/dotfiles/bash/bash_aliases
+## 4) .tmux.conf       -> ~/projects/personal/dotfiles/tmux.conf
+## 5) scripts          -> ~/projects/personal/dotfiles/scripts/
+## 6) .gitconfig       -> ~/projects/personal/dotfiles/gitconfig
+## 7) .config/nvim     -> ~/projects/personal/dotfiles/nvim/
+## 8) codeprompt-temps -> ~/projects/personal/codeprompts/cli/src/templates/
+## 9) .codeprompt.toml -> ~/projects/personal/dotfiles/codeprompt.toml
+##
 ## MacOS Specific Symlinks
-## 1) .aerospace.toml -> ~/projects/personal/dotfiles/mac/aerospace.toml
+## 1) .aerospace.toml        -> ~/projects/personal/dotfiles/mac/aerospace.toml
 ## 2) .config/ghostty/config -> ~/projects/personal/dotfiles/mac/ghostty
 
-PROJ_DIR=~/projects/
-PERSONAL_DIR="${PROJ_DIR}/personal/"
-MISC_DIR="${PROJ_DIR}/misc/"
-
-mkdir -p "$PERSONAL_DIR"
-mkdir -p "$MISC_DIR"
-
-DOTFILES_DIR=~/projects/personal/dotfiles/
+DOTFILES_DIR=~/projects/personal/dotfiles
 HOME_DIR=~
 BACKUP_DIR=~/.backup_dotfiles
 
@@ -38,11 +33,13 @@ create_symlink() {
     echo "Symlink already exists: $link_name"
     return
   elif [ -e "$link_name" ]; then
-    echo "File exists and is not a symlink, moving to backup directory: $link_name"
-    mv "$link_name" "${BACKUP_DIR}/$(basename "$link_name").bck"
-    echo "Moved to $link_name to $BACKUP_DIR"
+    local backup="${BACKUP_DIR}/$(basename "$link_name").$(date +%s).bck"
+    echo "File exists and is not a symlink, backing up: $link_name -> $backup"
+    mv "$link_name" "$backup"
   fi
 
+  # Ensure the parent directory exists
+  mkdir -p "$(dirname "$link_name")"
   ln -s "$target" "$link_name"
   echo "Created symlink: $link_name -> $target"
 }
@@ -66,14 +63,13 @@ delim
 create_symlink "$DOTFILES_DIR/nvim" "$HOME_DIR/.config/nvim"
 delim
 if [ -d ~/projects/personal/codeprompts ]; then
-    create_symlink "$HOME_DIR/projects/personal/codeprompts/cli/src/templates" "$HOME_DIR/cptemps"
+    create_symlink "$HOME_DIR/projects/personal/codeprompts/cli/src/templates" "$HOME_DIR/codeprompt-temps"
     delim
     create_symlink "$DOTFILES_DIR/codeprompt.toml" "$HOME_DIR/.codeprompt.toml"
     delim
 fi
 
 # MacOS-specific symlinks
-
 if [[ "$OSTYPE" == "darwin"* ]]; then
     create_symlink "$DOTFILES_DIR/mac/aerospace.toml" "$HOME_DIR/.aerospace.toml"
     delim
@@ -87,9 +83,9 @@ if [ -f "$HOME_DIR/.bashrc" ]; then
     source "$HOME_DIR/.bashrc"
 fi
 
-if [ -f "$HOME_DIR/.tmux.conf" ]; then
+if [ -f "$HOME_DIR/.tmux.conf" ] && command -v tmux >/dev/null 2>&1; then
     echo "Re-sourcing .tmux.conf"
-    tmux source-file "$HOME_DIR/.tmux.conf"
+    tmux source-file "$HOME_DIR/.tmux.conf" 2>/dev/null || true
 fi
 
 echo "All symlinks created successfully."
