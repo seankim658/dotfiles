@@ -65,3 +65,25 @@ ignore = [
 
 [profiles.rust]
 exclude = ["Cargo.lock"]
+
+[profiles.uvpython]
+exclude = ["uv.lock"]
+
+[profiles.udiff]
+diff_unstaged = true
+template = "/Users/skimmer/codeprompt-temps/git_diff.hbs"
+
+[profiles.sdiff]
+diff_staged = true
+template = "/Users/skimmer/codeprompt-temps/git_diff.hbs"
+
+[profiles.no-tree]
+template = "/Users/skimmer/codeprompt-temps/no_tree.hbs"
+
+[profiles.ucommit]
+diff_unstaged = true
+template = "/Users/skimmer/codeprompt-temps/git_commit.hbs"
+
+[profiles.scommit]
+diff_staged = true
+template = "/Users/skimmer/codeprompt-temps/git_commit.hbs"
