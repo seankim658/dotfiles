@@ -1,0 +1,41 @@
+# ============================================================
+#  Install all (bash):
+#    grep -vE '^\s*(#|$)' extensions.txt | xargs -L1 code --install-extension
+#
+#  Install all (PowerShell):
+#    Get-Content extensions.txt | ? { $_ -and $_ -notmatch '^\s*#' } | % { code --install-extension $_ }
+#
+#  Regenerate a pure list from a configured machine (strips comments):
+#    code --list-extensions > extensions.txt
+# ============================================================
+
+# --- Vim ---
+vscodevim.vim
+
+# --- Python (pyright + ruff + black) ---
+ms-python.python
+ms-python.vscode-pylance
+charliermarsh.ruff
+ms-python.black-formatter
+
+# --- Web (eslint / prettier / tailwind / astro / svelte) ---
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+bradlc.vscode-tailwindcss
+astro-build.astro-vscode
+svelte.svelte-vscode
+
+# --- Systems (go / rust / clangd) ---
+golang.go
+rust-lang.rust-analyzer
+llvm-vs-code-extensions.vscode-clangd
+
+# --- Lua (LSP + stylua) ---
+sumneko.lua
+JohnnyMorganz.stylua
+
+# --- Shell / data / markup ---
+mads-hartmann.bash-ide-vscode
+mechatroner.rainbow-csv
+yzhang.markdown-all-in-one
+wholroyd.jinja

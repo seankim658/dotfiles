@@ -1,0 +1,170 @@
+{
+  // ============================================================
+  //  macOS:    `~/Library/Application Support/Code/User/settings.json` 
+  //  Linux:    `~/.config/Code/User/settings.json`
+  //  Windows:  `%APPDATA%\Code\User\settings.json`
+  // ============================================================
+
+  // ============================================================
+  //  VIM (VSCodeVim) — core behaviour
+  // ============================================================
+  "vim.leader": "<space>",
+  "vim.hlsearch": true,
+  "vim.incsearch": true,
+  "vim.useCtrlKeys": true,
+
+  "vim.useSystemClipboard": false,
+
+  // jj -> <Esc>
+  "vim.insertModeKeyBindings": [
+    { "before": ["j", "j"], "after": ["<Esc>"] }
+  ],
+
+  // ------------------------------------------------------------
+  //  NORMAL mode
+  // ------------------------------------------------------------
+  "vim.normalModeKeyBindingsNonRecursive": [
+    // Delete / change / substitute without yanking.
+    { "before": ["d"], "after": ["\"", "_", "d"] },
+    { "before": ["D"], "after": ["\"", "_", "D"] },
+    { "before": ["c"], "after": ["\"", "_", "c"] },
+    { "before": ["C"], "after": ["\"", "_", "C"] },
+    { "before": ["x"], "after": ["\"", "_", "x"] },
+    { "before": ["X"], "after": ["\"", "_", "X"] },
+    { "before": ["s"], "after": ["\"", "_", "s"] },
+    { "before": ["S"], "after": ["\"", "_", "S"] },
+
+    // Wrapped-line aware j/k (loses the v:count nicety)
+    { "before": ["j"], "after": ["g", "j"] },
+    { "before": ["k"], "after": ["g", "k"] },
+
+    // New line below / above without entering insert (uses mark z)
+    { "before": ["<leader>", "j", "<CR>"], "after": ["m", "z", "o", "<Esc>", "`", "z"] },
+    { "before": ["<leader>", "k", "<CR>"], "after": ["m", "z", "O", "<Esc>", "`", "z"] },
+
+    // Toggle case on first char of word, then append
+    { "before": ["<leader>", "w", "c"], "after": ["b", "~", "e", "a"] },
+
+    // Leader commands -> VSCode actions
+    { "before": ["<leader>", "d", "d"], "commands": ["editor.action.showHover"] },
+    { "before": ["<leader>", "t", "n"], "commands": ["workbench.action.files.newUntitledFile"] },
+    { "before": ["<leader>", "t", "m"], "commands": ["workbench.action.closeActiveEditor"] },
+
+    // Window / split resizing
+    { "before": ["<leader>", "w", "+"], "commands": ["workbench.action.increaseViewHeight"] },
+    { "before": ["<leader>", "w", "-"], "commands": ["workbench.action.decreaseViewHeight"] },
+    { "before": ["<leader>", "w", ">"], "commands": ["workbench.action.increaseViewWidth"] },
+    { "before": ["<leader>", "w", "<"], "commands": ["workbench.action.decreaseViewWidth"] },
+    { "before": ["<leader>", "w", "="], "commands": ["workbench.action.evenEditorWidths"] },
+
+    // Buffers / editors  (bo = close all other editors)
+    { "before": ["<leader>", "b", "o"], "commands": ["workbench.action.closeOtherEditors"] },
+
+    // Diagnostics / Trouble -> Problems panel & LSP nav
+    { "before": ["<leader>", "x", "x"], "commands": ["workbench.actions.view.problems"] },
+    { "before": ["<leader>", "c", "l"], "commands": ["editor.action.goToReferences"] },
+    { "before": ["<leader>", "c", "s"], "commands": ["workbench.action.gotoSymbol"] },
+
+    // Markdown preview (peek.nvim -> built-in preview)
+    { "before": ["<leader>", "m", "p"], "commands": ["markdown.showPreviewToSide"] },
+
+    // Telescope bindings
+    { "before": ["<leader>", "f", "f"], "commands": ["workbench.action.quickOpen"] },         // find files
+    { "before": ["<leader>", "f", "w"], "commands": ["workbench.action.findInFiles"] },       // live grep
+    { "before": ["<leader>", "f", "b"], "commands": ["workbench.action.showAllEditors"] },    // buffers
+    { "before": ["<leader>", "f", "o"], "commands": ["workbench.action.openRecent"] },        // oldfiles
+    { "before": ["<leader>", "f", "z"], "commands": ["actions.find"] },                       // fuzzy in buffer
+
+    // File tree
+    { "before": ["<C-n>"], "commands": ["workbench.action.toggleSidebarVisibility"] },        // toggle tree
+    { "before": ["<leader>", "e"], "commands": ["workbench.view.explorer"] },                 // focus tree
+
+    // LSP
+    { "before": ["<leader>", "r", "a"], "commands": ["editor.action.rename"] },
+    { "before": ["<leader>", "c", "a"], "commands": ["editor.action.quickFix"] },
+    { "before": ["<leader>", "f", "m"], "commands": ["editor.action.formatDocument"] },
+    { "before": ["]", "d"], "commands": ["editor.action.marker.next"] },
+    { "before": ["[", "d"], "commands": ["editor.action.marker.prev"] }
+  ],
+
+  // ------------------------------------------------------------
+  //  VISUAL mode
+  // ------------------------------------------------------------
+  "vim.visualModeKeyBindingsNonRecursive": [
+    { "before": ["d"], "after": ["\"", "_", "d"] },
+    { "before": ["D"], "after": ["\"", "_", "D"] },
+    { "before": ["c"], "after": ["\"", "_", "c"] },
+    { "before": ["C"], "after": ["\"", "_", "C"] },
+    { "before": ["x"], "after": ["\"", "_", "x"] },
+    { "before": ["X"], "after": ["\"", "_", "X"] },
+    { "before": ["s"], "after": ["\"", "_", "s"] },
+    { "before": ["S"], "after": ["\"", "_", "S"] },
+    { "before": ["j"], "after": ["g", "j"] },
+    { "before": ["k"], "after": ["g", "k"] }
+
+    // Markdown bold/italic (needs "Markdown All in One" extension)
+    // { "before": ["<leader>", "b", "b"], "commands": ["markdown.extension.editing.toggleBold"] },
+    // { "before": ["<leader>", "i", "i"], "commands": ["markdown.extension.editing.toggleItalic"] }
+  ],
+
+  // ============================================================
+  //  EDITOR — matches options.lua / conform.lua
+  // ============================================================
+  "editor.lineNumbers": "relative", // relativenumber = true
+  "editor.rulers": [150],           // colorcolumn = "150"
+
+  "editor.formatOnSave": false,
+
+  "[lua]": { "editor.defaultFormatter": "JohnnyMorganz.stylua" },
+  "[python]": {
+    "editor.formatOnType": true,
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[html]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[go]": { "editor.defaultFormatter": "golang.go" },
+
+  // eslint fix + ruff lint/imports on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.ruff": "explicit",
+    "source.organizeImports.ruff": "explicit"
+  },
+
+  "workbench.colorTheme": "Visual Studio Dark",
+
+  "notebook.output.textLineLimit": 100,
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "right"
+  },
+  "notebook.lineNumbers": "on",
+  "security.workspace.trust.untrustedFiles": "open",
+  "workbench.editor.splitInGroupLayout": "vertical",
+  "workbench.tree.indent": 15,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.colorCustomizations": {
+    "tree.indentGuidesStroke": "#05ef3c"
+  },
+  "editor.guides.bracketPairs": true,
+  "indentRainbow.includedLanguages": ["python"],
+  "indentRainbow.indicatorStyle": "light",
+  "indentRainbow.lightIndicatorStyleLineWidth": 2,
+  "indentRainbow.colors": [
+    "rgba(255,255,64,0.3)",
+    "rgba(127,255,127,0.3)",
+    "rgba(255,127,255,0.3)",
+    "rgba(79,236,236,0.3)"
+  ],
+  "remote.autoForwardPortsSource": "hybrid",
+  "codesnap.transparentBackground": true,
+  "codesnap.backgroundColor": "",
+  "python.createEnvironment.trigger": "off"
+}

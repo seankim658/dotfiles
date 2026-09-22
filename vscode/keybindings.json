@@ -1,0 +1,21 @@
+// ============================================================
+//  Command Palette -> "Preferences: Open Keyboard Shortcuts (JSON)"
+//  macOS:    `~/Library/Application Support/Code/User/keybindings.json`
+//  Linux:    `~/.config/Code/User/keybindings.json`
+//  Windows:  `%APPDATA%\Code\User\keybindings.json`
+// ============================================================
+[
+  // Ctrl+n / Ctrl+p to move through the completion popup (cmp-style).
+  // Scoped to the suggest widget, so Ctrl+n is still "New File" and
+  // Ctrl+p is still "Quick Open" everywhere the popup isn't showing.
+  {
+    "key": "ctrl+n",
+    "command": "selectNextSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  },
+  {
+    "key": "ctrl+p",
+    "command": "selectPrevSuggestion",
+    "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
+  }
+]
