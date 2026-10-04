@@ -157,6 +157,9 @@ fi
 if [ -d "$HOME/bin" ]; then
     add_to_path "$HOME/bin"
 fi
+if [ -d "$HOME/.local/bin" ]; then
+    add_to_path "$HOME/.local/bin"
+fi
 
 # --------------------------
 # Environment Variables

@@ -77,12 +77,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     delim
 fi
 
-# Re-source files
-if [ -f "$HOME_DIR/.bashrc" ]; then
-    echo "Re-sourcing .bashrc"
-    source "$HOME_DIR/.bashrc"
-fi
-
 if [ -f "$HOME_DIR/.tmux.conf" ] && command -v tmux >/dev/null 2>&1; then
     echo "Re-sourcing .tmux.conf"
     tmux source-file "$HOME_DIR/.tmux.conf" 2>/dev/null || true

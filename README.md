@@ -112,6 +112,7 @@ git clone git@github.com:seankim658/dotfiles.git ~/projects/personal/dotfiles
 
 - `git`
 - `tmux`
+- `fzf`
 - `neovim` >= 0.10
   - A nerd font
   - `ripgrep` (`Telescope` dependency)
@@ -130,7 +131,9 @@ git clone git@github.com:seankim658/dotfiles.git ~/projects/personal/dotfiles
 **MacOS**:
 
 - Homebrew
-  - Then `brew install bash` (`tmux.conf` sets the default shell to `/opt/homebrew/bin/bash`)
+  - Then `brew install bash bash-completion@2 git`
+  - Then set Homebrew bash as the login shell:
+    `echo /opt/homebrew/bin/bash | sudo tee -a /etc/shells && chsh -s /opt/homebrew/bin/bash`
 - `Aerospace`
 - `Ghostty`
 
