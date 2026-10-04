@@ -84,19 +84,26 @@ else
     alias ls='ls --color=auto'  # Linux uses --color=auto for colors
 fi
 
-# Always set color support for grep, fgrep, and egrep
+# Always set color support for grep
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
 alias ll='ls -ltr'
 
-# Add an "alert" alias for long running commands.  Use like so:
+# Notify when a long-running command finishes. Use like so:
 #   sleep 10; alert
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias alert='osascript -e "display notification \"$(history | tail -n1 | sed -e 's/^\s*[0-9]\+\s*//')\" with title \"Alert\""'
-else
-    alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-fi
+alert() {
+    local exit_status=$?
+    local last_command
+    last_command=$(history 1 | sed -E 's/^ *[0-9]+ *//; s/[;&|] *alert$//')
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        osascript -e 'on run argv' -e 'display notification (item 1 of argv) with title "Alert"' -e 'end run' "$last_command"
+        return
+    fi
+
+    local icon=terminal
+    [ "$exit_status" -ne 0 ] && icon=error
+    notify-send --urgency=low -i "$icon" "$last_command"
+}
 
 # --------------------------
 # Load Bash Aliases
@@ -105,21 +112,13 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# Local aliases
-if [ -f ~/.bash_aliases_local ]; then
-    . ~/.bash_aliases_local
-fi
-
 # --------------------------
 # Completion Configuration
 # --------------------------
 if ! shopt -oq posix; then
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        if [ -f /opt/homebrew/etc/bash_completion ]; then
-            . /opt/homebrew/etc/bash_completion
-        fi
-        if [ -f ~/projects/misc/.git-completion.bash ]; then
-            . ~/projects/misc/.git-completion.bash
+        if [ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]; then
+            . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
         fi
     else
         if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -143,20 +142,20 @@ add_to_path() {
 
 # Add platform-specific paths
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    add_to_path "$HOME/Library/Python/3.11/bin"   # User-installed python scripts
-else
-    add_to_path "/usr/local/bin"                  # Common Linux binaries
+    for user_python_bin in "$HOME"/Library/Python/*/bin; do
+        [ -d "$user_python_bin" ] && add_to_path "$user_python_bin"
+    done
 fi
 
 # Add custom paths
-if [ -d "/opt/nvim-linux64/bin" ]; then
-  add_to_path "/opt/nvim-linux64/bin"
-fi
+for nvim_bin in /opt/nvim-linux-x86_64/bin /opt/nvim-linux64/bin; do
+    [ -d "$nvim_bin" ] && add_to_path "$nvim_bin"
+done
 if [ -d "$HOME/.deno/bin" ]; then
-  add_to_path "$HOME/.deno/bin"
+    add_to_path "$HOME/.deno/bin"
 fi
 if [ -d "$HOME/bin" ]; then
-  add_to_path "$HOME/bin"
+    add_to_path "$HOME/bin"
 fi
 
 # --------------------------
@@ -172,5 +171,16 @@ export NVM_DIR="$HOME/.nvm"
 # --------------------------
 # Custom Completions
 # --------------------------
-[ -f ~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash ] \
-  && source ~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash
+CODEPROMPT_COMPLETIONS=~/projects/personal/codeprompts/cli/completions/codeprompt-completions.bash
+if [ -f "$CODEPROMPT_COMPLETIONS" ]; then
+    . "$CODEPROMPT_COMPLETIONS"
+fi
+unset CODEPROMPT_COMPLETIONS
+
+# --------------------------
+# Machine-Specific Config
+# --------------------------
+# Load untracked, machine-specific config last so it can override anything above
+if [ -f ~/.bashrc.local ]; then
+    . ~/.bashrc.local
+fi
