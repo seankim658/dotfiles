@@ -17,11 +17,11 @@ require("mason-tool-installer").setup {
     -- Formatters
     "stylua",
     "prettier",
-    "black",
     "fixjson",
     -- Linters
     "eslint_d",
-    "ruff", -- Setup as an lsp but just provides linting
+    -- Linter (via LSP) and formatter (via conform)
+    "ruff",
   },
   -- rust-analyzer is setup directly through rustup (`rustup component add rust-analyzer`)
 }
