@@ -3,6 +3,7 @@
 These guidelines are not necessarily ordered by priority, but just a list of things to keep in mind.
 
 1. Embrace Simplicity Over Cleverness
+
 - Write code that's immediately understandable to others
 - If a solution feels complex, it probably needs simplification
 
@@ -28,15 +29,15 @@ def is_prime(n):
     return True
 ```
 
-2. Focus on Core Functionality
-- Question every feature: "Is this really necessary?"
-- Build incrementally based on actual needs, not hypothetical ones
-  - But that doesn't mean take shortcuts, I want to build things right
-  - I generally don't want to build overly simplified MVPs that will require me to go back and refactor/rewrite later
-- Delete unnecessary code and features
+2. Avoid Shortcuts
+
+- Build based on the proper way to do things, no shortcuts to stand up a feature quicker
+  - I generally don't want to build overly simplified MVPs that will just require me to go back and refactor/rewrite later
+  - Avoid the technical debt now
 
 3. Leverage Existing Solutions
-- Use standard libraries whenever possible
+
+- Use standard libraries and shared modules whenever possible
 - Don't reinvent the wheel
 - Choose well-maintained, popular libraries for common tasks
 - Keep dependencies minimal but practical
@@ -57,6 +58,7 @@ def read_config(file_path):
 ```
 
 4. Function Design
+
 - Each function should have a single responsibility
 - Keep functions short (typically under 20 lines)
 - Use descriptive names that indicate purpose
@@ -80,10 +82,11 @@ def save_user(user_data):
 ```
 
 5. Project Structure
+
 - Keep related code together
 - Use consistent file organization
-- Maintain a flat structure where possible
-- Group by feature rather than type
+- Group by responsibility
+- Follow best conventions from industry and open source projects
 
 ```plaintext
 # Good project structure
@@ -99,31 +102,39 @@ project/
 ```
 
 6. Code Review Guidelines
+
 - Review for simplicity first
 - Question complexity and overengineering
 - Look for duplicate code and abstraction opportunities
 - Ensure consistent style and naming conventions, please follow the conventions in the code that I provide (unless there are issues with it and in that case let me know)
 
 7. Maintenance Practices
+
 - Regularly remove unused code
 - Keep dependencies updated
 - Refactor when code becomes unclear
 - Document only what's necessary and likely to change
 
+8. Comments, Docstrings, and Documentation
+
+- Only include docstrings when the function/method isn't immediately obvious
+  - If the entity is immediately obvious you don't need to include a docstring
+- Documentation should not be self-referential and should not contain any references to any internal specs or documents in the project knowledge
+- All documentation and comments should be in imperative tone
+
 Remember:
-- Simple code is easier to maintain and debug
+
 - Write code for humans first, computers second
 - Add complexity only when justified by requirements
 - If you can't explain your code simply, it's probably too complex
 
-## Response Guidelines 
+## Response Guidelines
 
 Please remember the following points when structuring your response:
 
-- When you finish editing, present me with a list of options of how we could continue 
+- When you finish editing, present me with a list of options of how we could continue
 - Indicate what you think should be the next step
-- When I just send you the letter c, I mean continue
-- If I am using a non-statically typed language (like Python), always use type hints and type annotations whenever possible
+- If I am using a non-statically typed language (like Python), always use type hints and type annotations
 - Use descriptive, meaningful names for variables, functions, and classes
 - Handle potential errors explicitly
 - Validate input data
@@ -131,52 +142,16 @@ Please remember the following points when structuring your response:
 - Use consistent formatting
 - Avoid deep nesting of conditionals
 
-## Debugging
-
-Debugging software involves a systematic and 
-methodical approach to identify, isolate, and fix errors or 
-bugs in the code. Here are the key steps and techniques to help
-you debug software effectively:
-
-## 1. Figure Out the Symptoms
-- The first step is to understand the symptoms of the bug. What
-is the incorrect behavior? What errors are being reported? Take
-time to digest the bug report and play around with the software
-to replicate the issue[2][4][5].
-
-## 2. Reproduce the Bug
-- Reproduce the bug in a controlled environment. Start by 
-reproducing it in the same environment where it was originally 
-reported, and then reduce the steps to the minimum necessary to
-trigger the bug. This helps in isolating the issue[2][4].
-
-## 3. Understand the System
-- Gain a thorough understanding of the system and its 
-components. Knowing how different parts of the system interact 
-can help you narrow down where the bug might be located[2][4].
-
-## 4. Form a Hypothesis
-- Based on your understanding, form a hypothesis about where 
-the bug is located. Ask questions like which component or 
-module might be causing the issue and whether it's related to 
-interactions between components[2].
-
-## 5. Test Your Hypothesis
-- Test your hypothesis by validating input/output of the 
-suspected component. Modify the code if necessary to get more 
-information, such as adding debug logs. Ensure that any 
-modifications do not hide the bug[2][4].
-
-
-
 # Object-Oriented Programming Guidelines for Simple, Robust Code
 
 ## Core Principles
 
 ### 1. Single Responsibility Principle
+
 Each class should have one clear purpose and reason to change. Break complex classes into smaller, focused ones.
 
 Example:
+
 ```python
 # Bad
 class UserManager:
@@ -196,27 +171,31 @@ class ReportGenerator:
 ```
 
 ### 2. Encapsulation
+
 Hide internal details and provide a clean interface. Use private attributes and public methods judiciously.
 
 Example:
+
 ```python
 class BankAccount:
     def __init__(self):
         self._balance = 0  # Protected attribute
-        
+
     def deposit(self, amount):
         if amount <= 0:
             raise ValueError("Amount must be positive")
         self._balance += amount
-        
+
     def get_balance(self):
         return self._balance
 ```
 
 ### 3. Clear Constructor Initialization
+
 Initialize all attributes in the constructor. Make the object's state clear from the start.
 
 Example:
+
 ```python
 class Customer:
     def __init__(self, name, email):
@@ -227,9 +206,11 @@ class Customer:
 ```
 
 ### 4. Favor Composition Over Inheritance
+
 Use composition to build complex objects from simpler ones instead of deep inheritance hierarchies.
 
 Example:
+
 ```python
 # Bad
 class SupermarketItem(ElectronicDevice, Perishable, Taxable):
@@ -244,9 +225,11 @@ class SupermarketItem:
 ```
 
 ### 5. Make Dependencies Explicit
+
 Use dependency injection instead of creating dependencies inside methods.
 
 Example:
+
 ```python
 # Bad
 class OrderService:
@@ -258,33 +241,37 @@ class OrderService:
 class OrderService:
     def __init__(self, email_service):
         self.email_service = email_service  # Explicit dependency
-        
+
     def process_order(self, order):
         self.email_service.send_confirmation(order)
 ```
 
 ### 7. Use Strong Types and Interface Contracts
+
 Define clear interfaces and type hints to make code more maintainable and self-documenting.
 
 Example:
+
 ```python
 from typing import List, Optional
 
 class ShoppingCart:
     def __init__(self) -> None:
         self.items: List[Item] = []
-        
+
     def add_item(self, item: Item) -> None:
         self.items.append(item)
-        
+
     def get_total(self) -> float:
         return sum(item.price for item in self.items)
 ```
 
 ### 8. Keep Methods Short and Focused
+
 Each method should do one thing well. Extract complex logic into helper methods.
 
 Example:
+
 ```python
 # Bad
 def process_order(self, order):
@@ -308,11 +295,12 @@ def process_order(self, order):
 5. Test edge cases and error conditions
 
 Example:
+
 ```python
 def test_withdraw_insufficient_funds():
     account = BankAccount()
     account.deposit(100)
-    
+
     with pytest.raises(InsufficientFunds):
         account.withdraw(150)
 ```
