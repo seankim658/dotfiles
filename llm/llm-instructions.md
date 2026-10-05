@@ -117,10 +117,13 @@ project/
 
 8. Comments, Docstrings, and Documentation
 
-- Only include docstrings when the function/method isn't immediately obvious
-  - If the entity is immediately obvious you don't need to include a docstring
-- Documentation should not be self-referential and should not contain any references to any internal specs or documents in the project knowledge
-- All documentation and comments should be in imperative tone
+- **Keep it plain.** Use short, plain sentences. Cut filler, restatement, and jargon. If a sentence needs rereading, rewrite it.
+- **No colons in prose.** Split the sentence or use commas instead. Colons inside code, values, and URLs are fine.
+- **Use the imperative mood.** A command's docstring is its `--help` text, so its first sentence must stand alone.
+- **Say what and why, not how.** Document the rule the code enforces, the reason behind it, and any side effect a caller would not expect. Do not narrate the code line by line.
+- **Delete what the code already says.** Leave a simple function without a docstring. Do not repeat field names, types, or signatures in prose. An error message that names its rule is documentation enough.
+- **No internal references.** Never cite the engineering spec, the build, plan, etc. They are not part of the repository.
+- **Avoid lists that go stale.** Do not enumerate the callers, files, or stages that use something. Say what is true of all of them.
 
 Remember:
 
