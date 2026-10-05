@@ -13,6 +13,8 @@ local options = {
     markdown = { "prettier" },
     go = { "gopls" },
     astro = { "prettier_astro" },
+    sh = { "shfmt" },
+    bash = { "shfmt" },
   },
 
   formatters = {

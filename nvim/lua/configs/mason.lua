@@ -18,6 +18,7 @@ require("mason-tool-installer").setup {
     "stylua",
     "prettier",
     "fixjson",
+    "shfmt",
     -- Linters
     "eslint_d",
     -- Linter (via LSP) and formatter (via conform)
