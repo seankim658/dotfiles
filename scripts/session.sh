@@ -1,108 +1,136 @@
 #!/bin/bash
 
-SEARCH_PATHS=(~/projects/hive ~/projects/personal ~/projects/misc ~/projects/elicit ~/projects ~/scripts)
+set -euo pipefail
 
-# Determines whether to open separate `frontend/` and `backend/` windows
-is_split_project=false
+## Pick a project directory and open (or switch to) a tmux session for it
+##
+## Usage: session.sh [-s] [directory]
+##   -s         Create frontend/backend windows for a split project
+##   directory  Use this directory instead of picking one with fzf
 
-# Parse command line args
-while getopts "s" opt; do
-  case $opt in
-    s)
-      is_split_project=true
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-      ;;
-    esac
-done
+# Search paths that don't exist on this machine are skipped
+SEARCH_PATHS=(
+  "$HOME/projects"
+  "$HOME/projects/personal"
+  "$HOME/projects/work"
+  "$HOME/projects/misc"
+)
 
-# Shift the options so $1 becomes the first non-option argument
-shift $((OPTIND-1))
-
-# If an argument is provided, use it as the selected directory
-if [[ $# -eq 1 ]]; then
-  selected=$1
-else
-  # Otherwise, use fzf to interactively select a directory from the specified paths
-  selected=$(find "${SEARCH_PATHS[@]}" -mindepth 1 -maxdepth 1 -type d | fzf)
-fi
-
-# If no directory is selected (user pressed Esc or fzf returned nothing), exit
-if [[ -z $selected ]]; then
-  exit 0
-fi 
-
-# Extract the directory base name, replace dots with underscores, and use as session name
-selected_name=$(basename $"$selected" | tr . _)
-
-# Function to create session with frontend/backend directories
-create_split_session() {
-  local session_name=$1
-  local project_dir=$2
-
-  # Create new session with frontend window
-  tmux new-session -ds $session_name -c "$project_dir" -n frontend
-  tmux send-keys -t $session_name:0 "cd frontend" C-m
-
-  # Create backend window
-  tmux new-window -t $session_name:1 -n backend -c "$project_dir/backend"
-
-  # Create shell window at project root
-  tmux new-window -t $session_name:2 -n shell -c "$project_dir"
-
-  # Create run split window
-  tmux new-window -t $session_name:3 -n run -c "$project_dir/frontend"
-  tmux split-window -t $session_name:3 -v -c "$project_dir/backend"
-
-  # Select frontend window
-  tmux select-window -t $session_name:0
+usage() {
+  echo "Usage: $(basename "$0") [-s] [directory]" >&2
+  exit 1
 }
 
-# Function to create regular session
+# Print the directory picked with fzf, or nothing if the picker is cancelled
+pick_project_dir() {
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf is not installed" >&2
+    exit 1
+  fi
+
+  local existing_paths=()
+  local search_path
+  for search_path in "${SEARCH_PATHS[@]}"; do
+    if [[ -d $search_path ]]; then
+      existing_paths+=("$search_path")
+    fi
+  done
+
+  if [[ ${#existing_paths[@]} -eq 0 ]]; then
+    echo "None of the search paths exist: ${SEARCH_PATHS[*]}" >&2
+    exit 1
+  fi
+
+  find "${existing_paths[@]}" -mindepth 1 -maxdepth 1 -type d | fzf || true
+}
+
+# Print the absolute path of a directory argument
+resolve_project_dir() {
+  local dir=$1
+
+  if [[ ! -d $dir ]]; then
+    echo "Not a directory: $dir" >&2
+    exit 1
+  fi
+
+  cd "$dir" && pwd
+}
+
+# Replace characters tmux does not allow in session names
+session_name_for() {
+  basename "$1" | tr '.:' '__'
+}
+
+validate_split_project() {
+  local project_dir=$1
+  local subdir
+
+  for subdir in frontend backend; do
+    if [[ ! -d $project_dir/$subdir ]]; then
+      echo "Split project is missing $subdir/: $project_dir" >&2
+      exit 1
+    fi
+  done
+}
+
 create_regular_session() {
   local session_name=$1
   local project_dir=$2
 
-  # Create new session with code window
-  tmux new-session -ds $session_name -c "$project_dir" -n code
-
-  # Create shell window
-  tmux new-window -t $session_name:1 -n shell -c "$project_dir"
-
-  # Select code window
-  tmux select-window -t $session_name:0
+  tmux new-session -d -s "$session_name" -c "$project_dir" -n code
+  tmux new-window -t "$session_name:" -n shell -c "$project_dir"
+  tmux select-window -t "$session_name:code"
 }
 
-# If the script is not running inside an exisitng tmux session ($TMUX is unset)
-if [[ -z $TMUX ]]; then
-  # Check if session with the name already exists
-  if tmux has-session -t=$selected_name 2> /dev/null; then
-      # If the session already exists, attach to it
-      tmux attach-session -t $selected_name
-  else
-    # If the session doesn't exist, create a new tmux session
-    if [[ $is_split_project == true ]]; then
-      create_split_session $selected_name "$selected"
-      tmux attach-session -t $selected_name
-    else
-      tmux new-session -s $selected_name -c "$selected" -n code \; \
-        new-window -n shell -c "$selected" \; \
-        select-window -t code
-    fi
-  fi
-    exit 0
+create_split_session() {
+  local session_name=$1
+  local project_dir=$2
+
+  tmux new-session -d -s "$session_name" -c "$project_dir/frontend" -n frontend
+  tmux new-window -t "$session_name:" -n backend -c "$project_dir/backend"
+  tmux new-window -t "$session_name:" -n shell -c "$project_dir"
+  tmux new-window -t "$session_name:" -n run -c "$project_dir/frontend"
+  tmux split-window -t "$session_name:run" -v -c "$project_dir/backend"
+  tmux select-window -t "$session_name:frontend"
+}
+
+is_split_project=false
+while getopts "s" opt; do
+  case $opt in
+  s) is_split_project=true ;;
+  *) usage ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -gt 1 ]]; then
+  usage
 fi
 
-# If tmux is already running and the session does not exist, create in detached mode
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
+if [[ $# -eq 1 ]]; then
+  project_dir=$(resolve_project_dir "$1")
+else
+  project_dir=$(pick_project_dir)
+fi
+
+# Exit quietly when the fzf picker is cancelled
+if [[ -z $project_dir ]]; then
+  exit 0
+fi
+
+session_name=$(session_name_for "$project_dir")
+
+if ! tmux has-session -t "=$session_name" 2>/dev/null; then
   if [[ $is_split_project == true ]]; then
-    create_split_session $selected_name "$selected"
+    validate_split_project "$project_dir"
+    create_split_session "$session_name" "$project_dir"
   else
-    create_regular_session $selected_name "$selected"
+    create_regular_session "$session_name" "$project_dir"
   fi
 fi
 
-tmux switch-client -t $selected_name
-tmux select-window -t $selected_name:0
+if [[ -z ${TMUX:-} ]]; then
+  tmux attach-session -t "=$session_name"
+else
+  tmux switch-client -t "=$session_name"
+fi
