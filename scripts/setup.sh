@@ -5,15 +5,16 @@ set -euo pipefail
 ## Symlink dotfiles into place and reload the tmux config
 ##
 ## Symlinks (in home directory), relative to the repo root
-## 1) .bashrc          -> bash/bashrc
-## 2) .bash_profile    -> bash/bash_profile
-## 3) .bash_aliases    -> bash/bash_aliases
-## 4) .tmux.conf       -> tmux.conf
-## 5) scripts          -> scripts/
-## 6) .gitconfig       -> gitconfig
-## 7) .config/nvim     -> nvim/
-## 8) codeprompt-temps -> ~/projects/personal/codeprompts/cli/src/templates/
-## 9) .codeprompt.toml -> codeprompt.toml
+##  1) .bashrc          -> bash/bashrc
+##  2) .bash_profile    -> bash/bash_profile
+##  3) .bash_aliases    -> bash/bash_aliases
+##  4) .tmux.conf       -> tmux.conf
+##  5) scripts          -> scripts/
+##  6) .gitconfig       -> gitconfig
+##  7) .config/nvim     -> nvim/
+##  8) codeprompt-temps -> ~/projects/personal/codeprompts/cli/src/templates/
+##  9) .codeprompt.toml -> codeprompt.toml
+## 10) .repobundle.toml -> repobundle.toml
 ##
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml        -> mac/aerospace.toml
@@ -80,6 +81,8 @@ if [ -d "$HOME/projects/personal/codeprompts" ]; then
   create_symlink "$DOTFILES_DIR/codeprompt.toml" "$HOME/.codeprompt.toml"
   delim
 fi
+create_symlink "$DOTFILES_DIR/repobundle.toml" "$HOME/.repobundle.toml"
+delim
 
 # MacOS-specific symlinks
 if [[ "$OSTYPE" == "darwin"* ]]; then
