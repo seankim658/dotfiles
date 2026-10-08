@@ -6,4 +6,4 @@ Clone it into the sandbox with `git clone <FILL> .` and read the actual files be
 
 Use the sandbox to build the project and run its tests, linters, and type checkers. The sandbox may not have network access, so dependency installs can fail. If a check can't run, say so plainly instead of guessing the result.
 
-The lock file is <FILL>. Never edit it. I regenerate it myself.
+The lock file should never be edited by you. I regenerate it myself.
