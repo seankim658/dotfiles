@@ -101,6 +101,20 @@ return {
       }
     end,
   },
+  {
+    "dlyongemallo/diffview-plus.nvim",
+    version = "*",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = { "DiffviewOpen", "DiffviewToggle", "DiffviewClose", "DiffviewFileHistory" },
+    opts = {
+      enhanced_diff_hl = true,
+    },
+    keys = {
+      { "<leader>gd", "<cmd>DiffviewToggle<cr>", desc = "Diffview toggle (working tree)" },
+      { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Diffview current file history" },
+      { "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Diffview repo history" },
+    },
+  },
   require "configs.cmp",
   require "configs.nvim-tree",
   require "configs.nvim-treesitter",
