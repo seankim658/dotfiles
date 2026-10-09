@@ -6,12 +6,19 @@
 local M = {}
 
 M.base46 = {
-  theme = "palenight",
+  theme = "chadracula",
 
-  -- hl_override = {
-  -- 	Comment = { italic = true },
-  -- 	["@comment"] = { italic = true },
-  -- },
+  hl_override = {
+    -- Comment = { italic = true },
+    -- ["@comment"] = { italic = true },
+
+    -- Tint diff lines instead of recoloring their text, so syntax colors stay readable.
+    -- A table like { "blue", "black", 88 } mixes 88% of the way from blue to black.
+    DiffAdd = { fg = "NONE", bg = { "green", "black", 85 } },
+    DiffChange = { fg = "NONE", bg = { "blue", "black", 88 } },
+    DiffText = { fg = "NONE", bg = { "blue", "black", 70 } },
+    DiffDelete = { fg = "grey", bg = { "red", "black", 85 } },
+  },
 }
 
 M.ui = {
