@@ -97,6 +97,7 @@ tmux 3.5a
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `session.sh` | Uses `fzf` to find a project and start a tmux session. If the session already exists, will attach to it. Uses the directory name as the session name and creates two windows, `code` and `shell`.                          |
 | `setup.sh`   | My initial machine setup for dotfile symlinks, etc. If a file matches but is no a symlink, backs it up. If a symlink already exists, just skips. Also re-sources some config files (such as `.bashrc`, `.tmux.conf`, etc.) |
+| `review-patch.sh` | Applies a patch to the current git repo without staging it, then opens Neovim in Diffview to review it. Refuses to run if the patch does not apply cleanly or the repo has uncommitted changes. |
 
 ## Setup
 

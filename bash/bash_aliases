@@ -1,4 +1,5 @@
-alias ovi='sh ~/scripts/session.sh'
+alias ovi='~/scripts/session.sh'
+alias rp='~/scripts/review-patch.sh'
 alias tmls='tmux ls'
 alias tmla='tmux a'
 alias tmks='tmux kill-server'
