@@ -26,6 +26,26 @@ shopt -s checkwinsize       # Updated LINES and COLUMNS after resizing terminal
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # --------------------------
+# Git Prompt
+# --------------------------
+# Load __git_ps1 from whichever git install this machine has
+for git_prompt_script in \
+    "${HOMEBREW_PREFIX:-/opt/homebrew}/etc/bash_completion.d/git-prompt.sh" \
+    /Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh \
+    /usr/lib/git-core/git-sh-prompt \
+    /usr/share/git-core/contrib/completion/git-prompt.sh; do
+    if [ -r "$git_prompt_script" ]; then
+        . "$git_prompt_script"
+        break
+    fi
+done
+unset git_prompt_script
+
+# Mark unstaged (*) and staged (+) changes, and show ahead/behind upstream (<, >, =)
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUPSTREAM="auto"
+
+# --------------------------
 # Prompt Configuration
 # --------------------------
 # Set variable identifying the chroot you work in (used in the prompt below).
@@ -50,13 +70,19 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 # Configure the prompt (PS1)
-# - Includes username (\u), hostname (\h), and working directory (\w)
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+# - Includes username (\u), hostname (\h), working directory (\w), and git branch
+# Leave the branch out if git-prompt wasn't found, so every prompt doesn't error
+git_branch_segment=''
+if declare -F __git_ps1 >/dev/null; then
+    git_branch_segment='$(__git_ps1 " (%s)")'
 fi
-unset color_prompt force_color_prompt
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[01;33m\]'"$git_branch_segment"'\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w'"$git_branch_segment"'\$ '
+fi
+unset color_prompt force_color_prompt git_branch_segment
 
 # Set terminal title for xterm/rxvt
 # - Displays user, host, and current directory in the terminal title bar
