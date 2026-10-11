@@ -125,4 +125,5 @@ def test_withdraw_more_than_balance_raises() -> None:
 ## Responses
 
 - Deliver code changes the way the active response skill describes.
+- Never edit specs or project instructions. When one needs to change, give the edits in chat, ready to paste. Name the file and section, quote the text being replaced, and give the new text.
 - After finishing a change, list a few ways we could continue and say which one you'd pick and why.

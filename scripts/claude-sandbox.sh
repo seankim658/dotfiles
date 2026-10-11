@@ -8,21 +8,25 @@ set -euo pipefail
 ##   --rebuild    Rebuild the image and recreate this repo's container
 ##   claude args  Passed to claude, such as --dangerously-skip-permissions
 ##
-## Claude works in its own clone at ~/projects/claude/<repo> and reads the real
-## repo at /upstream, which is mounted read-only. Patches and handoffs land in
-## the clone's outbox/ folder. The repo's project-knowledge/ folder is mounted
-## read-only at /knowledge and added to the session, so its CLAUDE.md loads as
-## project instructions. The repo's other/ folder is hidden from Claude. Each
-## repo keeps its own container between runs, so installed dependencies
-## persist. All containers share one Claude login. See llm/README.md.
+## Claude works in its own clone at ~/projects/claude/<repo>, mounted at
+## /projects/<repo>, and reads the real repo at /upstream, which is mounted
+## read-only. Patches and handoffs land in the clone's outbox/ folder. The
+## repo's project-knowledge/ folder is mounted read-only at /knowledge and added
+## to the session, so its CLAUDE.md loads as project instructions. The repo's
+## other/ folder is hidden from Claude. The coding guidelines and Claude Code
+## skills from these dotfiles are copied in on every launch. Each repo keeps its
+## own container between runs, so installed dependencies persist. All
+## containers share one Claude login. See llm/README.md.
 
 SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
 CLONES_DIR="$HOME/projects/claude"
 KNOWLEDGE_FOLDER=project-knowledge
 PRIVATE_FOLDER=other
+LLM_DIR="$DOTFILES_DIR/llm"
 IMAGE=claude-sandbox
 CONFIG_VOLUME=claude-sandbox-config
+CLAUDE_HOME=/home/node/.claude
 
 fail() {
   echo "$1" >&2
@@ -30,10 +34,19 @@ fail() {
 }
 
 # Docker names allow letters, digits, and _.- only
+repo_slug() {
+  printf '%s' "$(basename "$1")" | tr -c 'a-zA-Z0-9_.-' '-'
+}
+
 container_name() {
-  local repo_name
-  repo_name="$(printf '%s' "$(basename "$1")" | tr -c 'a-zA-Z0-9_.-' '-')"
-  echo "claude-sandbox-$repo_name"
+  echo "claude-sandbox-$(repo_slug "$1")"
+}
+
+# Claude Code keeps sessions and auto memory per working directory, and every
+# container shares one config volume. A path unique to each repo keeps them
+# from mixing across projects.
+container_workdir() {
+  echo "/projects/$(repo_slug "$1")"
 }
 
 ensure_clone() {
@@ -76,7 +89,7 @@ expected_mounts() {
   local clone_dir=$2
 
   {
-    echo "/workspace=$clone_dir"
+    echo "$(container_workdir "$repo_root")=$clone_dir"
     echo "/upstream=$repo_root"
     if [ -d "$repo_root/$KNOWLEDGE_FOLDER" ]; then
       echo "/knowledge=$repo_root/$KNOWLEDGE_FOLDER"
@@ -90,12 +103,12 @@ expected_mounts() {
 actual_mounts() {
   docker container inspect \
     --format '{{range .Mounts}}{{.Destination}}={{.Source}}{{println}}{{end}}' "$1" \
-    | grep -E "^/(workspace|upstream|knowledge|upstream/$PRIVATE_FOLDER)=" | sort
+    | grep -E "^/(workspace|projects/[^=]+|upstream|knowledge|upstream/$PRIVATE_FOLDER|opt/llm)=" | sort
 }
 
 # Mounts are fixed when a container is made. This catches two repos with the
-# same folder name, a moved clone, and knowledge or private folders added or
-# removed since.
+# same folder name, a moved clone, knowledge or private folders added or
+# removed since, and containers from older layouts.
 require_matching_container() {
   local name=$1
   local repo_root=$2
@@ -128,9 +141,8 @@ create_container() {
   local repo_root=$2
   local clone_dir=$3
   local mounts=(
-    --volume "$clone_dir:/workspace"
+    --volume "$clone_dir:$(container_workdir "$repo_root")"
     --volume "$repo_root:/upstream:ro"
-    --volume "$DOTFILES_DIR/llm:/opt/llm:ro"
     --volume "$CONFIG_VOLUME:/home/node/.claude"
   )
 
@@ -155,19 +167,34 @@ start_container() {
   esac
 }
 
+# Copy only the files Claude Code uses, so the rest of the dotfiles stay out of
+# the container. Edits take effect the next time this runs. The skills folder
+# is replaced as a whole, which also drops skills deleted from the dotfiles.
+install_config() {
+  local name=$1
+
+  docker exec --user root "$name" rm -rf "$CLAUDE_HOME/skills" "$CLAUDE_HOME/CLAUDE.md"
+  docker cp --quiet "$LLM_DIR/skills/shared/." "$name:$CLAUDE_HOME/skills"
+  docker cp --quiet "$LLM_DIR/skills/claude-code/." "$name:$CLAUDE_HOME/skills"
+  docker cp --quiet "$LLM_DIR/llm-instructions.md" "$name:$CLAUDE_HOME/CLAUDE.md"
+  docker exec --user root "$name" chown -R node:node "$CLAUDE_HOME/skills" "$CLAUDE_HOME/CLAUDE.md"
+}
+
 # --add-dir gives Claude the knowledge folder, and the variable makes Claude
 # Code load the CLAUDE.md and rules inside it
 run_claude() {
   local name=$1
   local repo_root=$2
   shift 2
+  local workdir
+  workdir="$(container_workdir "$repo_root")"
 
   if [ -d "$repo_root/$KNOWLEDGE_FOLDER" ]; then
-    exec docker exec --interactive --tty \
+    exec docker exec --interactive --tty --workdir "$workdir" \
       --env CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 \
       "$name" claude --add-dir /knowledge "$@"
   fi
-  exec docker exec --interactive --tty "$name" claude "$@"
+  exec docker exec --interactive --tty --workdir "$workdir" "$name" claude "$@"
 }
 
 main() {
@@ -189,7 +216,7 @@ main() {
   ensure_clone "$repo_root" "$clone_dir"
   prepare_image "$rebuild" "$name"
   start_container "$name" "$repo_root" "$clone_dir"
-  docker exec "$name" /opt/llm/sandbox/link-config.sh
+  install_config "$name"
 
   echo "Patches and handoffs: $clone_dir/outbox"
   run_claude "$name" "$repo_root" "$@"

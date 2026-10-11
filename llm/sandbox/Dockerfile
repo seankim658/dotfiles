@@ -35,4 +35,4 @@ RUN mkdir -p /home/node/.claude
 RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal -c clippy -c rustfmt
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
-WORKDIR /workspace
+WORKDIR /projects
