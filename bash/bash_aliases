@@ -1,5 +1,6 @@
 alias ovi='~/scripts/session.sh'
 alias rp='~/scripts/review-patch.sh'
+alias csb='~/scripts/claude-sandbox.sh'
 alias tmls='tmux ls'
 alias tmla='tmux a'
 alias tmks='tmux kill-server'
