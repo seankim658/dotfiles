@@ -39,6 +39,12 @@ List known gaps, deferred items, and anything currently broken.
 
 Give an ordered recommendation with reasoning. Say why this order, not just what.
 
+### Read first
+
+- Files the next step changes or calls, by path.
+- Spec sections that bear on it.
+- Tests worth reading before changing a module, if any.
+
 ### For the next chat
 
 Close with this instruction block addressed to the new session.
@@ -47,7 +53,6 @@ Close with this instruction block addressed to the new session.
 
 ## Never include
 
-- **Setup or run instructions.** The project instructions already say how the code is provided and how to work with it. Dev servers, migrations, env vars, and similar commands are the user's to run. Repeating any of this wastes space and can contradict the project instructions.
 - **Recaps of code the reader can already see.** Summarizing a file's contents is filler. Point at it and explain what's non-obvious about it.
 - **Meta-commentary about this conversation.** Skip how long it ran, what was tried and abandoned, and apologies. Only surface an abandoned approach if the next chat is likely to retry it.
 
