@@ -147,7 +147,7 @@ docker inspect claude-sandbox-<repo> \
   --format '{{range .Mounts}}{{.Source}} -> {{.Destination}} (writable: {{.RW}}){{println}}{{end}}'
 ```
 
-Inside a session, `/memory` lists the instruction files that loaded. `!` runs a shell command in the container, and `Shift+Tab` cycles permission modes.
+Inside a session, `/context` shows everything in the context window, including the instruction files that loaded. `/memory` opens instruction files for editing and lists their standard locations, whether or not a file exists there. `!` runs a shell command in the container, and `Shift+Tab` cycles permission modes.
 
 ## Troubleshooting
 
@@ -157,6 +157,6 @@ Inside a session, `/memory` lists the instruction files that loaded. `!` runs a 
 
 **A new or edited skill doesn't show up.** Skills are copied in when `csb` starts. Exit and run `csb` again.
 
-**Project instructions don't load.** Check that the file is named exactly `CLAUDE.md` inside `project-knowledge/`, and run `/memory` to see what loaded.
+**Project instructions don't load.** Check that the file is named exactly `CLAUDE.md` inside `project-knowledge/`, and run `/context` to see what loaded.
 
 **Git reports "dubious ownership" for `/upstream`.** The image marks `/upstream/.git` as safe. If the error appears, the image is older than that setting, so run `csb --rebuild`.
