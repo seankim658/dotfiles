@@ -41,8 +41,8 @@ pick_project_dir() {
     exit 1
   fi
 
-  # Skip the clones claude-sandbox.sh makes for Claude
-  find "${existing_paths[@]}" -mindepth 1 -maxdepth 1 -type d ! -name '*-claude' | fzf || true
+  # Skip the folder of clones claude-sandbox.sh makes for Claude
+  find "${existing_paths[@]}" -mindepth 1 -maxdepth 1 -type d ! -path "$HOME/projects/claude" | fzf || true
 }
 
 # Print the absolute path of a directory argument

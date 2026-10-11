@@ -1,0 +1,4 @@
+# Personal folders kept out of every repo. The leading slash matches them only
+# at the repo root, so source folders with these names are still tracked.
+/other/
+/project-knowledge/

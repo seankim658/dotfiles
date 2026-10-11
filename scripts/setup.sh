@@ -5,16 +5,17 @@ set -euo pipefail
 ## Symlink dotfiles into place and reload the tmux config
 ##
 ## Symlinks (in home directory), relative to the repo root
-##  1) .bashrc          -> bash/bashrc
-##  2) .bash_profile    -> bash/bash_profile
-##  3) .bash_aliases    -> bash/bash_aliases
-##  4) .tmux.conf       -> tmux.conf
-##  5) scripts          -> scripts/
-##  6) .gitconfig       -> gitconfig
-##  7) .config/nvim     -> nvim/
-##  8) codeprompt-temps -> ~/projects/personal/codeprompts/cli/src/templates/
-##  9) .codeprompt.toml -> codeprompt.toml
-## 10) .repobundle.toml -> repobundle.toml
+##  1) .bashrc           -> bash/bashrc
+##  2) .bash_profile     -> bash/bash_profile
+##  3) .bash_aliases     -> bash/bash_aliases
+##  4) .tmux.conf        -> tmux.conf
+##  5) scripts           -> scripts/
+##  6) .gitconfig        -> gitconfig
+##  7) .gitignore_global -> gitignore_global
+##  8) .config/nvim      -> nvim/
+##  9) codeprompt-temps  -> ~/projects/personal/codeprompts/cli/src/templates/
+## 10) .codeprompt.toml  -> codeprompt.toml
+## 11) .repobundle.toml  -> repobundle.toml
 ##
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml        -> mac/aerospace.toml
@@ -72,6 +73,8 @@ delim
 create_symlink "$DOTFILES_DIR/scripts" "$HOME/scripts"
 delim
 create_symlink "$DOTFILES_DIR/gitconfig" "$HOME/.gitconfig"
+delim
+create_symlink "$DOTFILES_DIR/gitignore_global" "$HOME/.gitignore_global"
 delim
 create_symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 delim

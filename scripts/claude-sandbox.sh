@@ -8,13 +8,19 @@ set -euo pipefail
 ##   --rebuild    Rebuild the image and recreate this repo's container
 ##   claude args  Passed to claude, such as --dangerously-skip-permissions
 ##
-## Claude works in a sibling clone named <repo>-claude and reads the real repo
-## at /upstream, which is mounted read-only. Patches and handoffs land in the
-## clone's outbox/ folder. Each repo keeps its own container between runs, so
-## installed dependencies persist. All containers share one Claude login.
+## Claude works in its own clone at ~/projects/claude/<repo> and reads the real
+## repo at /upstream, which is mounted read-only. Patches and handoffs land in
+## the clone's outbox/ folder. The repo's project-knowledge/ folder is mounted
+## read-only at /knowledge and added to the session, so its CLAUDE.md loads as
+## project instructions. The repo's other/ folder is hidden from Claude. Each
+## repo keeps its own container between runs, so installed dependencies
+## persist. All containers share one Claude login. See llm/README.md.
 
 SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
+CLONES_DIR="$HOME/projects/claude"
+KNOWLEDGE_FOLDER=project-knowledge
+PRIVATE_FOLDER=other
 IMAGE=claude-sandbox
 CONFIG_VOLUME=claude-sandbox-config
 
@@ -35,10 +41,13 @@ ensure_clone() {
   local clone_dir=$2
 
   if [ ! -e "$clone_dir" ]; then
+    mkdir -p "$(dirname "$clone_dir")"
     git clone --quiet "$repo_root" "$clone_dir"
     echo "Created Claude's clone: $clone_dir"
   elif [ ! -d "$clone_dir/.git" ]; then
     fail "Claude's clone must be a git repo, but $clone_dir is not"
+  elif [ "$(git -C "$clone_dir" remote get-url origin)" != "$repo_root" ]; then
+    fail "Claude's clone at $clone_dir must come from $repo_root, but it comes from $(git -C "$clone_dir" remote get-url origin)"
   fi
 }
 
@@ -60,20 +69,43 @@ container_state() {
   fi
 }
 
-# Two repos with the same folder name would otherwise share a container
-require_same_repo() {
+# Print the repo-specific mounts as destination=source lines, sorted. The other/
+# mask is an empty tmpfs, so it has no source.
+expected_mounts() {
+  local repo_root=$1
+  local clone_dir=$2
+
+  {
+    echo "/workspace=$clone_dir"
+    echo "/upstream=$repo_root"
+    if [ -d "$repo_root/$KNOWLEDGE_FOLDER" ]; then
+      echo "/knowledge=$repo_root/$KNOWLEDGE_FOLDER"
+    fi
+    if [ -d "$repo_root/$PRIVATE_FOLDER" ]; then
+      echo "/upstream/$PRIVATE_FOLDER="
+    fi
+  } | sort
+}
+
+actual_mounts() {
+  docker container inspect \
+    --format '{{range .Mounts}}{{.Destination}}={{.Source}}{{println}}{{end}}' "$1" \
+    | grep -E "^/(workspace|upstream|knowledge|upstream/$PRIVATE_FOLDER)=" | sort
+}
+
+# Mounts are fixed when a container is made. This catches two repos with the
+# same folder name, a moved clone, and knowledge or private folders added or
+# removed since.
+require_matching_container() {
   local name=$1
   local repo_root=$2
-  local mounted
+  local clone_dir=$3
 
   if [ "$(container_state "$name")" = missing ]; then
     return
   fi
-  mounted="$(docker container inspect \
-    --format '{{range .Mounts}}{{if eq .Destination "/upstream"}}{{.Source}}{{end}}{{end}}' "$name")"
-
-  if [ "$mounted" != "$repo_root" ]; then
-    fail "Container $name must mount $repo_root, but it mounts $mounted. Remove it with 'docker rm -f $name'."
+  if [ "$(actual_mounts "$name")" != "$(expected_mounts "$repo_root" "$clone_dir")" ]; then
+    fail "Container $name was made for different folders than this repo has now. Remove it with 'docker rm -f $name', then run this again."
   fi
 }
 
@@ -95,13 +127,20 @@ create_container() {
   local name=$1
   local repo_root=$2
   local clone_dir=$3
+  local mounts=(
+    --volume "$clone_dir:/workspace"
+    --volume "$repo_root:/upstream:ro"
+    --volume "$DOTFILES_DIR/llm:/opt/llm:ro"
+    --volume "$CONFIG_VOLUME:/home/node/.claude"
+  )
 
-  docker run --detach --name "$name" \
-    --volume "$clone_dir:/workspace" \
-    --volume "$repo_root:/upstream:ro" \
-    --volume "$DOTFILES_DIR/llm:/opt/llm:ro" \
-    --volume "$CONFIG_VOLUME:/home/node/.claude" \
-    "$IMAGE" sleep infinity >/dev/null
+  if [ -d "$repo_root/$KNOWLEDGE_FOLDER" ]; then
+    mounts+=(--volume "$repo_root/$KNOWLEDGE_FOLDER:/knowledge:ro")
+  fi
+  if [ -d "$repo_root/$PRIVATE_FOLDER" ]; then
+    mounts+=(--mount "type=tmpfs,destination=/upstream/$PRIVATE_FOLDER,readonly")
+  fi
+  docker run --detach --name "$name" "${mounts[@]}" "$IMAGE" sleep infinity >/dev/null
 }
 
 start_container() {
@@ -116,6 +155,21 @@ start_container() {
   esac
 }
 
+# --add-dir gives Claude the knowledge folder, and the variable makes Claude
+# Code load the CLAUDE.md and rules inside it
+run_claude() {
+  local name=$1
+  local repo_root=$2
+  shift 2
+
+  if [ -d "$repo_root/$KNOWLEDGE_FOLDER" ]; then
+    exec docker exec --interactive --tty \
+      --env CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 \
+      "$name" claude --add-dir /knowledge "$@"
+  fi
+  exec docker exec --interactive --tty "$name" claude "$@"
+}
+
 main() {
   local rebuild=false
   if [ "${1:-}" = "--rebuild" ]; then
@@ -126,18 +180,19 @@ main() {
   command -v docker >/dev/null 2>&1 || fail "docker is not installed"
   local repo_root
   repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || fail "Not inside a git repo: $(pwd)"
-  local clone_dir="$repo_root-claude"
+  local clone_dir
+  clone_dir="$CLONES_DIR/$(basename "$repo_root")"
   local name
   name="$(container_name "$repo_root")"
 
-  require_same_repo "$name" "$repo_root"
+  require_matching_container "$name" "$repo_root" "$clone_dir"
   ensure_clone "$repo_root" "$clone_dir"
   prepare_image "$rebuild" "$name"
   start_container "$name" "$repo_root" "$clone_dir"
   docker exec "$name" /opt/llm/sandbox/link-config.sh
 
   echo "Patches and handoffs: $clone_dir/outbox"
-  exec docker exec --interactive --tty "$name" claude "$@"
+  run_claude "$name" "$repo_root" "$@"
 }
 
 main "$@"
