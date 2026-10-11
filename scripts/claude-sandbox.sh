@@ -14,9 +14,10 @@ set -euo pipefail
 ## repo's project-knowledge/ folder is mounted read-only at /knowledge and added
 ## to the session, so its CLAUDE.md loads as project instructions. The repo's
 ## other/ folder is hidden from Claude. The coding guidelines and Claude Code
-## skills from these dotfiles are copied in on every launch. Each repo keeps its
-## own container between runs, so installed dependencies persist. All
-## containers share one Claude login. See llm/README.md.
+## skills from these dotfiles are copied in on every launch, and skills synced
+## from claude.ai are turned off. Each repo keeps its own container between
+## runs, so installed dependencies persist. All containers share one Claude
+## login. See llm/README.md.
 
 SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
@@ -180,6 +181,21 @@ install_config() {
   docker exec --user root "$name" chown -R node:node "$CLAUDE_HOME/skills" "$CLAUDE_HOME/CLAUDE.md"
 }
 
+# Skills synced from claude.ai overlap the Claude Code skills but are written
+# for claude.ai. Turning sync off also removes copies already downloaded. The
+# setting is merged into the settings file so other settings survive.
+disable_skill_sync() {
+  local name=$1
+  local settings="$CLAUDE_HOME/settings.json"
+
+  docker exec "$name" bash -c '
+    set -euo pipefail
+    [ -f "$1" ] || echo "{}" > "$1"
+    jq ".syncClaudeAiSkills = false" "$1" > "$1.tmp"
+    mv "$1.tmp" "$1"
+  ' _ "$settings"
+}
+
 # --add-dir gives Claude the knowledge folder, and the variable makes Claude
 # Code load the CLAUDE.md and rules inside it
 run_claude() {
@@ -217,6 +233,7 @@ main() {
   prepare_image "$rebuild" "$name"
   start_container "$name" "$repo_root" "$clone_dir"
   install_config "$name"
+  disable_skill_sync "$name"
 
   echo "Patches and handoffs: $clone_dir/outbox"
   run_claude "$name" "$repo_root" "$@"

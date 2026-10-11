@@ -74,6 +74,8 @@ Claude Code adds every `CLAUDE.md` it finds to the context at the start of each 
 
 `csb` copies the guidelines and the Claude Code skills into the container each time it starts, and nothing else from the dotfiles. The claude.ai skills and the snippets never enter the container. Edits take effect the next time `csb` runs. The skills folder is replaced on every launch, so skills deleted from the dotfiles disappear from the container too.
 
+Claude Code also downloads the skills enabled on the claude.ai account, which overlap the Claude Code skills but are written for claude.ai. `csb` sets `syncClaudeAiSkills` to `false` in the container's `~/.claude/settings.json` on every launch, leaving the other settings as they are. Claude Code then stops downloading them and removes the copies it already has.
+
 Claude Code loads a `CLAUDE.md` from a folder passed with `--add-dir` only when `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` is set. `csb` sets both whenever the repo has a `project-knowledge/` folder. Claude Code's usual home for private project instructions is a gitignored `CLAUDE.local.md` at the repo root. It doesn't fit the sandbox, because gitignored files aren't cloned and a copy placed in the clone would end up in patches.
 
 ## Setting Up a Project
