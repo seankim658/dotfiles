@@ -5,7 +5,7 @@ description: Read the codebase and come up with a plan of attack before any code
 
 Don't write any code yet. Read the codebase and come up with a plan of attack.
 
-Read the actual code, not just the docs. If the project uses a git bundle, clone it as the project instructions describe. If you need a file you don't have, ask me for it instead of assuming what it contains.
+Read the actual code, not just the docs. Get the code the way the project instructions describe. If you need a file you don't have, ask me for it instead of assuming what it contains.
 
 Treat internal spec files as context, not truth. They show the general intent and where to look, but some details may have drifted. When a spec and the code disagree, trust the code and point out the mismatch.
 
