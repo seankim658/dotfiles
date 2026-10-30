@@ -2,7 +2,7 @@
 
 | Field                   | Value                                                                    |
 | ----------------------- | ------------------------------------------------------------------------ |
-| Version                 | 1.0 draft                                                                |
+| Version                 | 0.1 draft                                                                |
 | Date                    | <Day, DD-Mon-YY>                                                         |
 | Scope                   | <One sentence on what the system is>                                     |
 | Status of this document | Draft. Open questions must be answered before the work they block starts |
