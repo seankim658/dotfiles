@@ -1,6 +1,6 @@
 ### Code format
 
-The code for this project is a git bundle named <FILL>, attached to each new chat. Work from the bundle, not from assumptions about the code.
+The code for this project is a git bundle, attached to each new chat. Work from the bundle, not from assumptions about the code.
 
 Clone it into the sandbox with `git clone <FILL> .` and read the actual files before planning or changing anything. Set up the sandbox once per chat and reuse it on later turns. If I attach a new bundle, discard the old checkout and clone the new one. If the sandbox has been reset, clone the bundle again.
 
