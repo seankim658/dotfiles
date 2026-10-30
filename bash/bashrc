@@ -206,6 +206,12 @@ if [ -f "$CODEPROMPT_COMPLETIONS" ]; then
 fi
 unset CODEPROMPT_COMPLETIONS
 
+REPOBUNDLE_COMPLETIONS=~/projects/personal/repobundle/completions/repobundle.bash
+if [ -f "$REPOBUNDLE_COMPLETIONS" ]; then
+    . "$REPOBUNDLE_COMPLETIONS"
+fi
+unset REPOBUNDLE_COMPLETIONS
+
 # --------------------------
 # Machine-Specific Config
 # --------------------------
