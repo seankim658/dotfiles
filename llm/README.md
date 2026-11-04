@@ -94,7 +94,7 @@ my-project/
 2. Put the current specs next to it. Point to each one from `CLAUDE.md` so Claude reads it when it matters. To load a short spec into every session, import it with a line like `@engineering-spec.md`. Imports use context in every session, so keep them for documents Claude always needs.
 3. Keep file names stable so the references in `CLAUDE.md` stay valid. Versions belong in `other/`, not in the names.
 
-Both folders are in the global gitignore (`gitignore_global` at the root of these dotfiles), so they can't be committed by accident. Only folders at the repo root match, so a source folder like `src/other/` is still tracked.
+Both folders are in the global gitignore (`git/gitignore_global` in these dotfiles), so they can't be committed by accident.
 
 `csb` decides the mounts when it creates a container. If a repo gains or loses either folder later, `csb` says so and asks for the container to be removed and recreated.
 

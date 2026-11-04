@@ -8,14 +8,14 @@ set -euo pipefail
 ##  1) .bashrc           -> bash/bashrc
 ##  2) .bash_profile     -> bash/bash_profile
 ##  3) .bash_aliases     -> bash/bash_aliases
-##  4) .tmux.conf        -> tmux.conf
+##  4) .tmux.conf        -> tmux/tmux.conf
 ##  5) scripts           -> scripts/
-##  6) .gitconfig        -> gitconfig
-##  7) .gitignore_global -> gitignore_global
+##  6) .gitconfig        -> git/gitconfig
+##  7) .gitignore_global -> git/gitignore_global
 ##  8) .config/nvim      -> nvim/
 ##  9) codeprompt-temps  -> ~/projects/personal/codeprompts/cli/src/templates/
-## 10) .codeprompt.toml  -> codeprompt.toml
-## 11) .repobundle.toml  -> repobundle.toml
+## 10) .codeprompt.toml  -> codeprompt/codeprompt.toml
+## 11) .repobundle.toml  -> repobundle/repobundle.toml
 ##
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml        -> mac/aerospace.toml
@@ -81,23 +81,23 @@ create_symlink "$DOTFILES_DIR/bash/bash_profile" "$HOME/.bash_profile"
 delim
 create_symlink "$DOTFILES_DIR/bash/bash_aliases" "$HOME/.bash_aliases"
 delim
-create_symlink "$DOTFILES_DIR/tmux.conf" "$HOME/.tmux.conf"
+create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
 delim
 create_symlink "$DOTFILES_DIR/scripts" "$HOME/scripts"
 delim
-create_symlink "$DOTFILES_DIR/gitconfig" "$HOME/.gitconfig"
+create_symlink "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
 delim
-create_symlink "$DOTFILES_DIR/gitignore_global" "$HOME/.gitignore_global"
+create_symlink "$DOTFILES_DIR/git/gitignore_global" "$HOME/.gitignore_global"
 delim
 create_symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 delim
 if [ -d "$HOME/projects/personal/codeprompts" ]; then
   create_symlink "$HOME/projects/personal/codeprompts/cli/src/templates" "$HOME/codeprompt-temps"
   delim
-  create_symlink "$DOTFILES_DIR/codeprompt.toml" "$HOME/.codeprompt.toml"
+  create_symlink "$DOTFILES_DIR/codeprompt/codeprompt.toml" "$HOME/.codeprompt.toml"
   delim
 fi
-create_symlink "$DOTFILES_DIR/repobundle.toml" "$HOME/.repobundle.toml"
+create_symlink "$DOTFILES_DIR/repobundle/repobundle.toml" "$HOME/.repobundle.toml"
 delim
 
 # MacOS-specific symlinks
