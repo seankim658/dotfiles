@@ -147,6 +147,15 @@ git clone git@github.com:seankim658/dotfiles.git ~/projects/personal/dotfiles
 ~/projects/personal/dotfiles/scripts/setup.sh
 ```
 
+
+Git identity lives in an untracked `~/.gitconfig.local`, so each machine can use its own name and email.
+Git refuses to commit until it exists. Create it with:
+
+```bash
+git config --file ~/.gitconfig.local user.name "Your Name"
+git config --file ~/.gitconfig.local user.email "you@example.com"
+```
+
 This symlinks everything into place and re-sources `.bashrc` / `.tmux.conf`. On first launch, `lazy.nvim` bootstraps 
 itself, installs all plugins pinned in `lazy-lock.json`, and `mason-tool-installer` installs the LSPs/formatters/linters 
 listed in `nvim/lua/configs/mason.lua`.

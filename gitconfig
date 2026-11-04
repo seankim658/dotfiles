@@ -1,6 +1,6 @@
 [user]
-  email = 33474168+seankim658@users.noreply.github.com
-  name = Sean Kim
+  # Refuse to commit until a machine sets its own identity in ~/.gitconfig.local
+  useConfigOnly = true
 
 [init]
   defaultBranch = main
@@ -30,3 +30,7 @@
   cob = checkout -b
   lg = log --graph
   lo = log --oneline
+
+# Load untracked, machine-specific config last so it can override anything above
+[include]
+  path = ~/.gitconfig.local

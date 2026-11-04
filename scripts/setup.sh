@@ -20,6 +20,8 @@ set -euo pipefail
 ## MacOS Specific Symlinks
 ## 1) .aerospace.toml        -> mac/aerospace.toml
 ## 2) .config/ghostty/config -> mac/ghostty
+##
+## Warns if ~/.gitconfig.local is missing, since it holds the git identity
 
 SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
@@ -62,6 +64,17 @@ delim() {
   echo "--------------------------------------"
 }
 
+# Warn instead of failing, because the identity is personal data the script can't guess
+warn_if_git_identity_missing() {
+  if [ -f "$HOME/.gitconfig.local" ]; then
+    return
+  fi
+
+  echo "Git identity not set. Create ~/.gitconfig.local with a [user] block, for example" >&2
+  echo "  git config --file ~/.gitconfig.local user.name \"Your Name\"" >&2
+  echo "  git config --file ~/.gitconfig.local user.email \"you@example.com\"" >&2
+}
+
 create_symlink "$DOTFILES_DIR/bash/bashrc" "$HOME/.bashrc"
 delim
 create_symlink "$DOTFILES_DIR/bash/bash_profile" "$HOME/.bash_profile"
@@ -99,6 +112,9 @@ if [ -f "$HOME/.tmux.conf" ] && command -v tmux >/dev/null 2>&1; then
   echo "Reloading .tmux.conf"
   tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
 fi
+
+warn_if_git_identity_missing
+delim
 
 if [ "$skipped_count" -gt 0 ]; then
   echo "Finished with $skipped_count skipped symlink(s), see warnings above." >&2
