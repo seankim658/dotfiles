@@ -3,6 +3,7 @@ require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
+local util = require "lspconfig.util"
 
 -- Base config shared by all LSPs
 local base = {
@@ -47,8 +48,28 @@ setup("ts_ls", {
 
 --- Python ---
 
--- Prefer the active virtualenv's interpreter, fall back to system python
-local function get_python_path()
+-- Root at the uv workspace (its single uv.lock) so pyright sees workspace-level
+-- config, stubs and .venv. Fall back to pyproject.toml, then .git, for other projects.
+local python_root = util.root_pattern("uv.lock", "pyproject.toml", ".git")
+
+-- Return the project's .venv interpreter if one exists
+local function project_venv_python(root)
+  if not root then
+    return nil
+  end
+  local python = root .. "/.venv/bin/python"
+  if vim.fn.executable(python) == 1 then
+    return python
+  end
+  return nil
+end
+
+-- Prefer the project's .venv, then the active virtualenv, then system python
+local function get_python_path(root)
+  local venv_python = project_venv_python(root)
+  if venv_python then
+    return venv_python
+  end
   if vim.env.VIRTUAL_ENV then
     return vim.env.VIRTUAL_ENV .. "/bin/python"
   end
@@ -58,8 +79,9 @@ end
 
 -- pyright: type checking + IDE features
 setup("pyright", {
+  root_dir = python_root,
   before_init = function(_, config)
-    config.settings.python.pythonPath = get_python_path()
+    config.settings.python.pythonPath = get_python_path(config.root_dir)
   end,
 })
 
