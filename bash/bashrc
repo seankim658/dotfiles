@@ -174,7 +174,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # Add custom paths
-for nvim_bin in /opt/nvim-linux-x86_64/bin /opt/nvim-linux64/bin; do
+for nvim_bin in /opt/nvim-macos-arm64/bin /opt/nvim-linux-x86_64/bin /opt/nvim-linux64/bin; do
     [ -d "$nvim_bin" ] && add_to_path "$nvim_bin"
 done
 if [ -d "$HOME/.deno/bin" ]; then
