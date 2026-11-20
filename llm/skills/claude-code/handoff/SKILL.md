@@ -11,7 +11,7 @@ Save it to `outbox/handoff.md`, replacing any earlier one, and tell me it's ther
 
 ## Who is reading this
 
-The reader is a new Claude session with no memory of this one. Write for a capable collaborator who can already see the code but has no idea what was decided here or why.
+The reader is a new Claude session with no memory of this session, so this handoff has to be completely self contained. Write for a capable collaborator who can already see the code but has no idea what was decided here or why.
 
 That framing decides what belongs in the document. Include the reasoning, decisions, and judgment that exist only in this conversation. Leave out anything the reader could get by reading the code, and anything only the user acts on.
 
