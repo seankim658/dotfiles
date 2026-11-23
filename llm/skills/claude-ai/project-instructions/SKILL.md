@@ -18,12 +18,13 @@ Write instructions for a Claude Project from the templates below. The result is 
    - The dump file names (code dumps) or the bundle file name (git bundle).
    - The commit scopes, what counts as a breaking change, and a sample summary line (commit messages).
 3. **Assemble** the chosen sections in this order. Description, Code, Engineering spec, Commit messages, Delivering changes.
-4. **Deliver** the whole result in one fenced block opened with four backticks (````md), because the commit template has its own inner fence. After the block, list any `<FILL>` slots still open.
+4. **Deliver** the whole result in the chat reply as copy-and-paste ready markdown. The user pastes it straight into the project's instructions, so a file, doc or artifact only adds a step. Put it in one fenced block opened with four backticks (````md), because the commit template has its own inner fence. After the block, list any `<FILL>` slots still open.
 
 ## Rules
 
 - Copy each template verbatim. Change only the `<FILL>` slots and the adjustments named in this skill.
 - Add nothing the user didn't choose. No extra sections, no preamble, no closing summary.
+- Give the instructions in chat, never as a file, doc or artifact, even when they run long.
 - If the user doesn't know a value yet, leave the slot as `<FILL: what goes here>` and say so.
 - Match the templates' style in anything you write. Short plain sentences, imperative mood, no em-dashes, no colons in prose.
 
