@@ -24,4 +24,4 @@ Give copy-and-paste ready markdown, and name the file and the ID or section it r
 - **Add an item.** Use the next unused number in its prefix, tagged once where it is defined. Never reuse or renumber an ID.
 - **Withdraw an item.** Keep its tag, mark it _Withdrawn_, and name any replacement.
 - **Changelog.** Add a row naming every ID that changed, and raise the version for any binding change.
-- **Check IDs.** Where the ID tool exists, run `spec_ids.py check` over every spec file together, and fix every problem before handing back.
+- **Check IDs.** Where the ID tool exists, run `spec_ids.py check` (script available in the `engineering-spec` skill) over every spec file together, and fix every problem before handing back.
