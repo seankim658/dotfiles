@@ -15,7 +15,7 @@ Write instructions for a Claude Project from the templates below. The result is 
    - **Extra sections** (multi-select). Commit messages, Delivering changes.
 2. **Ask for the fill-ins.** Ask in one plain message for whatever is still missing.
    - What the project is. Check attached code, a README and the conversation first, and ask only for what you can't find.
-   - The dump file names (code dumps) or the bundle file name (git bundle).
+   - The dump file names (code dumps). Never ask for a bundle file name, because the git bundle template has no slot for one.
    - The commit scopes, what counts as a breaking change, and a sample summary line (commit messages).
 3. **Assemble** the chosen sections in this order. Description, Code, Engineering spec, Commit messages, Delivering changes.
 4. **Deliver** the whole result in the chat reply as copy-and-paste ready markdown. The user pastes it straight into the project's instructions, so a file, doc or artifact only adds a step. Put it in one fenced block opened with four backticks (````md), because the commit template has its own inner fence. After the block, list any `<FILL>` slots still open.
@@ -58,14 +58,14 @@ Three parsing gotchas:
 
 ### Git bundle
 
-Put the bundle file name in place of `<FILL>`.
+Copy this template with no changes. The bundle's file name changes every chat, so the template points at whichever bundle is attached instead of naming one.
 
 ````md
 ### Code format
 
 The code for this project is a git bundle, attached to each new chat. Work from the bundle, not from assumptions about the code.
 
-Clone it into the sandbox with `git clone <FILL> .` and read the actual files before planning or changing anything. Set up the sandbox once per chat and reuse it on later turns. If I attach a new bundle, discard the old checkout and clone the new one. If the sandbox has been reset, clone the bundle again.
+Clone the attached `.bundle` file into the sandbox with `git clone <bundle path> .`, whatever its name, and read the actual files before planning or changing anything. Set up the sandbox once per chat and reuse it on later turns. If I attach a new bundle, discard the old checkout and clone the new one. If the sandbox has been reset, clone the bundle again.
 
 After cloning, remove the bundle remote with `git remote remove origin`. The bundle is read-only, so nothing can be pushed to it, and the sandbox's stop hook asks for a push after every commit while a remote exists. Never push. Changes reach me only as patch files.
 
