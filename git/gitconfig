@@ -13,6 +13,8 @@
   s = status
   a = add
   aa = add .
+  ap = apply
+  apc = apply --check
   c = commit
   cm = commit -m
   p = push
